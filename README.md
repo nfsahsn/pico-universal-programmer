@@ -135,3 +135,4 @@ python tools/merge_firmware.py \
     --picorvd firmware/picorvd.bin \
     -o pico_universal_programmer_full.uf2
 ```
+
