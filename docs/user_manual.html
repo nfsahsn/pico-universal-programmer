@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pico Universal Programmer — User Manual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --primary: #1a73e8;
+    --primary-dark: #0d47a1;
+    --accent-green: #34a853;
+    --accent-yellow: #f9ab00;
+    --accent-blue: #4285f4;
+    --accent-red: #ea4335;
+    --bg-dark: #1e293b;
+    --bg-card: #f8fafc;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-muted: #64748b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    line-height: 1.6;
+    background: #fff;
+  }
+
+  /* Cover Page */
+  .cover {
+    page-break-after: always;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+    color: #fff;
+    text-align: center;
+    padding: 60px 40px;
+  }
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .cover .subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    color: #94a3b8;
+    margin-bottom: 40px;
+    max-width: 480px;
+  }
+  .cover .badge-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .cover .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge-green { background: #166534; color: #bbf7d0; }
+  .badge-yellow { background: #854d0e; color: #fef08a; }
+  .badge-blue { background: #1e40af; color: #bfdbfe; }
+  .cover .version {
+    font-size: 13px;
+    color: #475569;
+    margin-top: 20px;
+  }
+
+  /* Page layout */
+  .page {
+    padding: 50px 60px;
+    page-break-after: always;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    border-bottom: 3px solid var(--primary);
+    padding-bottom: 8px;
+    margin: 40px 0 20px;
+  }
+  h2:first-child { margin-top: 0; }
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 28px 0 12px;
+  }
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin: 20px 0 8px;
+  }
+
+  p { margin: 8px 0; font-size: 14px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  th {
+    background: var(--bg-dark);
+    color: #fff;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:nth-child(even) td { background: #f1f5f9; }
+
+  /* Pinout Diagram Styles */
+  .pinout-map {
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 20px 0;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  }
+  .pinout-grid {
+    display: flex;
+    justify-content: center;
+    gap: 120px;
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .pico-board-graphic {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 100px;
+    transform: translateX(-50%);
+    background: #064e3b;
+    border-radius: 8px;
+    border: 2px solid #047857;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .usb-connector {
+    width: 40px;
+    height: 20px;
+    background: #94a3b8;
+    border-radius: 2px;
+    margin-top: -10px;
+  }
+  .pico-logo {
+    margin-top: 40px;
+    color: #6ee7b7;
+    font-family: sans-serif;
+    font-weight: 800;
+    writing-mode: vertical-rl;
+    letter-spacing: 2px;
+  }
+  .pin-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    z-index: 1;
+    width: 220px;
+  }
+  .pin-row {
+    display: flex;
+    align-items: center;
+    background: #334155;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+  .col-left .pin-row { justify-content: flex-end; }
+  .col-right .pin-row { justify-content: flex-start; }
+  .p-num {
+    display: inline-block;
+    width: 22px;
+    text-align: center;
+    color: #94a3b8;
+    background: #0f172a;
+    border-radius: 3px;
+    margin: 0 6px;
+  }
+  .col-left .p-num { order: 2; margin-right: 0; }
+  .col-left .pin-label { order: 1; }
+  .col-right .p-num { order: 1; margin-left: 0; }
+  .col-right .pin-label { order: 2; }
+
+  .p-active { background: #047857; color: #fff; border-left: 3px solid #34d399; }
+  .p-gnd { background: #1d4ed8; color: #fff; border-left: 3px solid #60a5fa; }
+  .p-vcc { background: #be123c; color: #fff; border-left: 3px solid #fb7185; }
+  .p-uart { background: #b45309; color: #fff; border-left: 3px solid #fbbf24; }
+  .col-right .p-active { border-left: none; border-right: 3px solid #34d399; }
+  .col-right .p-gnd { border-left: none; border-right: 3px solid #60a5fa; }
+  .col-right .p-vcc { border-left: none; border-right: 3px solid #fb7185; }
+  .col-right .p-uart { border-left: none; border-right: 3px solid #fbbf24; }
+
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    font-size: 12px;
+  }
+  .l-item { display: flex; align-items: center; gap: 5px; }
+  .l-box { width: 12px; height: 12px; border-radius: 2px; }
+  .b-active { background: #047857; }
+  .b-gnd { background: #1d4ed8; }
+  .b-vcc { background: #be123c; }
+  .b-uart { background: #b45309; }
+
+  /* Callout boxes */
+  .callout {
+    border-left: 4px solid;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  .callout-important {
+    border-color: var(--accent-red);
+    background: #fef2f2;
+  }
+  .callout-important .callout-title { color: var(--accent-red); }
+  .callout-tip {
+    border-color: var(--accent-green);
+    background: #f0fdf4;
+  }
+  .callout-tip .callout-title { color: var(--accent-green); }
+  .callout-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  /* Steps list */
+  .steps {
+    counter-reset: step-counter;
+    list-style: none;
+    padding: 0;
+  }
+  .steps li {
+    counter-increment: step-counter;
+    padding: 10px 0 10px 44px;
+    position: relative;
+    font-size: 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .steps li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps li:last-child { border-bottom: none; }
+
+  code, .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .mode-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .mode-indicator .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .mode-1 { background: #dcfce7; color: #166534; }
+  .mode-1 .dot { background: #22c55e; }
+  .mode-2 { background: #fef9c3; color: #854d0e; }
+  .mode-2 .dot { background: #eab308; }
+  .mode-3 { background: #dbeafe; color: #1e40af; }
+  .mode-3 .dot { background: #3b82f6; }
+
+  .kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    background: #f8fafc;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: #94a3b8;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= COVER PAGE ======================= -->
+<div class="cover">
+  <h1>Pico Universal<br>Programmer & Debugger</h1>
+  <p class="subtitle">A 3-in-1 open-source hardware programmer for Raspberry Pi Pico (RP2040) with physical mode switching, status LEDs, and turnkey Arduino IDE integration.</p>
+  <div class="badge-row">
+    <span class="badge badge-green">CMSIS-DAP v2</span>
+    <span class="badge badge-yellow">Black Magic Probe</span>
+    <span class="badge badge-blue">PicoRVD (WCH 1-Wire)</span>
+  </div>
+  <div class="badge-row">
+    <span class="badge" style="background:#334155;color:#e2e8f0;">CH32V003</span>
+    <span class="badge" style="background:#334155;color:#e2e8f0;">STM32</span>
+    <span class="badge" style="background:#334155;color:#e2e8f0;">RP2040</span>
+    <span class="badge" style="background:#334155;color:#e2e8f0;">ESP32</span>
+    <span class="badge" style="background:#334155;color:#e2e8f0;">nRF52</span>
+    <span class="badge" style="background:#334155;color:#e2e8f0;">SAMD</span>
+  </div>
+  <p class="version">User Manual &mdash; Version 1.1 &mdash; September 2026</p>
+</div>
+
+<!-- ======================= TABLE OF CONTENTS ======================= -->
+<div class="page">
+  <h2>Table of Contents</h2>
+  <table>
+    <tr><th style="width:50px">#</th><th>Section</th></tr>
+    <tr><td>1</td><td>Master Pinout &amp; Breadboard Wiring</td></tr>
+    <tr><td>2</td><td>Mode Operation &amp; Button Controls</td></tr>
+    <tr><td>3</td><td>Target 1: WCH CH32V003 (1-Wire SWIO)</td></tr>
+    <tr><td>4</td><td>Target 2: STM32 Blue Pill / Black Pill (SWD)</td></tr>
+    <tr><td>5</td><td>Target 3: Raspberry Pi Pico / RP2040 (SWD)</td></tr>
+    <tr><td>6</td><td>Target 4: ESP32 / ESP32-S3 (4-Wire JTAG)</td></tr>
+    <tr><td>7</td><td>Serial Monitor (UART) Debugging</td></tr>
+    <tr><td>8</td><td>Arduino IDE One-Click Setup</td></tr>
+    <tr><td>9</td><td>Quick Reference Cheat Sheet</td></tr>
+    <tr><td>10</td><td>Electrical Safety Rules</td></tr>
+  </table>
+
+  <h2>1. Master Pinout &amp; Breadboard Wiring</h2>
+  <p>The Raspberry Pi Pico programmer relies on specific GPIO pins for SWD, JTAG, 1-Wire, UART, and controls. Wire your breadboard exactly according to the map below.</p>
+  
+  <div class="pinout-map">
+    <div class="pinout-grid">
+      <div class="pico-board-graphic">
+        <div class="usb-connector"></div>
+        <div class="pico-logo">RASPBERRY PI PICO</div>
+      </div>
+      <!-- Left Side -->
+      <div class="pin-col col-left">
+        <div class="pin-row p-uart"><span class="pin-label">GP0 (UART TX)</span><span class="p-num">1</span></div>
+        <div class="pin-row p-uart"><span class="pin-label">GP1 (UART RX)</span><span class="p-num">2</span></div>
+        <div class="pin-row p-gnd"><span class="pin-label">GND</span><span class="p-num">3</span></div>
+        <div class="pin-row p-active"><span class="pin-label">GP2 (SWCLK / JTAG TCK)</span><span class="p-num">4</span></div>
+        <div class="pin-row p-active"><span class="pin-label">GP3 (SWDIO / JTAG TMS)</span><span class="p-num">5</span></div>
+        <div class="pin-row p-active"><span class="pin-label">GP4 (JTAG TDI)</span><span class="p-num">6</span></div>
+        <div class="pin-row p-active"><span class="pin-label">GP5 (JTAG TDO)</span><span class="p-num">7</span></div>
+        <div class="pin-row p-gnd"><span class="pin-label">GND</span><span class="p-num">8</span></div>
+        <div class="pin-row"><span class="pin-label">GP6</span><span class="p-num">9</span></div>
+        <div class="pin-row"><span class="pin-label">GP7</span><span class="p-num">10</span></div>
+        <div class="pin-row"><span class="pin-label">GP8</span><span class="p-num">11</span></div>
+        <div class="pin-row"><span class="pin-label">GP9</span><span class="p-num">12</span></div>
+        <div class="pin-row p-gnd"><span class="pin-label">GND</span><span class="p-num">13</span></div>
+        <div class="pin-row"><span class="pin-label">GP10</span><span class="p-num">14</span></div>
+        <div class="pin-row"><span class="pin-label">GP11</span><span class="p-num">15</span></div>
+        <div class="pin-row"><span class="pin-label">GP12</span><span class="p-num">16</span></div>
+        <div class="pin-row"><span class="pin-label">GP13</span><span class="p-num">17</span></div>
+        <div class="pin-row p-gnd"><span class="pin-label">GND</span><span class="p-num">18</span></div>
+        <div class="pin-row"><span class="pin-label">GP14</span><span class="p-num">19</span></div>
+        <div class="pin-row p-active"><span class="pin-label">GP15 (Mode Button)</span><span class="p-num">20</span></div>
+      </div>
+      <!-- Right Side -->
+      <div class="pin-col col-right">
+        <div class="pin-row"><span class="p-num">40</span><span class="pin-label">VBUS (5V USB)</span></div>
+        <div class="pin-row"><span class="p-num">39</span><span class="pin-label">VSYS</span></div>
+        <div class="pin-row p-gnd"><span class="p-num">38</span><span class="pin-label">GND</span></div>
+        <div class="pin-row"><span class="p-num">37</span><span class="pin-label">3V3_EN</span></div>
+        <div class="pin-row p-vcc"><span class="p-num">36</span><span class="pin-label">3V3_OUT (Target Power)</span></div>
+        <div class="pin-row"><span class="p-num">35</span><span class="pin-label">ADC_VREF</span></div>
+        <div class="pin-row p-active"><span class="p-num">34</span><span class="pin-label">GP28 (CH32V SWIO)</span></div>
+        <div class="pin-row p-gnd"><span class="p-num">33</span><span class="pin-label">GND</span></div>
+        <div class="pin-row"><span class="p-num">32</span><span class="pin-label">GP27</span></div>
+        <div class="pin-row"><span class="p-num">31</span><span class="pin-label">GP26</span></div>
+        <div class="pin-row"><span class="p-num">30</span><span class="pin-label">RUN</span></div>
+        <div class="pin-row"><span class="p-num">29</span><span class="pin-label">GP22</span></div>
+        <div class="pin-row p-gnd"><span class="p-num">28</span><span class="pin-label">GND</span></div>
+        <div class="pin-row"><span class="p-num">27</span><span class="pin-label">GP21</span></div>
+        <div class="pin-row"><span class="p-num">26</span><span class="pin-label">GP20</span></div>
+        <div class="pin-row"><span class="p-num">25</span><span class="pin-label">GP19</span></div>
+        <div class="pin-row p-active"><span class="p-num">24</span><span class="pin-label">GP18 (Mode 3 LED - Blue)</span></div>
+        <div class="pin-row p-gnd"><span class="p-num">23</span><span class="pin-label">GND</span></div>
+        <div class="pin-row p-active"><span class="p-num">22</span><span class="pin-label">GP17 (Mode 2 LED - Yellow)</span></div>
+        <div class="pin-row p-active"><span class="p-num">21</span><span class="pin-label">GP16 (Mode 1 LED - Green)</span></div>
+      </div>
+    </div>
+    <div class="legend">
+      <div class="l-item"><div class="l-box b-active"></div> <span>Program/Debug/Control</span></div>
+      <div class="l-item"><div class="l-box b-uart"></div> <span>UART (Serial Monitor)</span></div>
+      <div class="l-item"><div class="l-box b-vcc"></div> <span>Power (3.3V Target)</span></div>
+      <div class="l-item"><div class="l-box b-gnd"></div> <span>Ground</span></div>
+    </div>
+  </div>
+
+  <h3>Control Assembly Instructions</h3>
+  <table>
+    <tr><th>Component</th><th>Pico Pin</th><th>Connection</th></tr>
+    <tr><td><strong>Mode Button</strong></td><td>Pin 20 (GP15)</td><td>Connect Button between GP15 and GND (Pin 18). Internal pull-up is enabled.</td></tr>
+    <tr><td><strong>Green LED</strong> (Mode 1)</td><td>Pin 21 (GP16)</td><td>GP16 &rarr; LED Anode &rarr; LED Cathode &rarr; 330&Omega; Resistor &rarr; GND</td></tr>
+    <tr><td><strong>Yellow LED</strong> (Mode 2)</td><td>Pin 22 (GP17)</td><td>GP17 &rarr; LED Anode &rarr; LED Cathode &rarr; 330&Omega; Resistor &rarr; GND</td></tr>
+    <tr><td><strong>Blue LED</strong> (Mode 3)</td><td>Pin 24 (GP18)</td><td>GP18 &rarr; LED Anode &rarr; LED Cathode &rarr; 330&Omega; Resistor &rarr; GND</td></tr>
+  </table>
+  <div class="callout callout-tip">
+    <div class="callout-title">TIP</div>
+    The three discrete LEDs and resistors are optional. The Pico's onboard green LED (GP25) also blinks 1, 2, or 3 times to indicate the active mode if you prefer not to build the full breadboard circuit.
+  </div>
+</div>
+
+<!-- ======================= MODE OPERATION ======================= -->
+<div class="page">
+  <h2>2. Mode Operation &amp; Button Controls</h2>
+  <table>
+    <tr><th>Mode</th><th>Indicator</th><th>Firmware Engine</th><th>Target Board Families</th></tr>
+    <tr>
+      <td><span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span></td>
+      <td>Green LED / 1 Blink</td>
+      <td>Raspberry Pi Debug Probe (CMSIS-DAP v2)</td>
+      <td>STM32, RP2040, ESP32, nRF52, SAMD, WCH V203/V307</td>
+    </tr>
+    <tr>
+      <td><span class="mode-indicator mode-2"><span class="dot"></span>Mode 2</span></td>
+      <td>Yellow LED / 2 Blinks</td>
+      <td>Black Magic Probe (Built-in GDB Server)</td>
+      <td>ARM Cortex-M, RISC-V (zero external software needed)</td>
+    </tr>
+    <tr>
+      <td><span class="mode-indicator mode-3"><span class="dot"></span>Mode 3</span></td>
+      <td>Blue LED / 3 Blinks</td>
+      <td>PicoRVD (WCH 1-Wire SWIO)</td>
+      <td>WCH CH32V003 (proprietary single-wire debug on PD1)</td>
+    </tr>
+  </table>
+  <h3>Button Controls</h3>
+  <table>
+    <tr><th>Action</th><th>Gesture</th><th>Feedback</th></tr>
+    <tr>
+      <td><strong>Cycle Mode</strong></td>
+      <td>Short press GP15 (&lt; 1 second)</td>
+      <td>Advances to next mode: Mode 1 &rarr; Mode 2 &rarr; Mode 3 &rarr; Mode 1</td>
+    </tr>
+    <tr>
+      <td><strong>Save Default Power-On Mode</strong></td>
+      <td>Long press GP15 (&gt; 2 seconds)</td>
+      <td>All LEDs flash rapidly 5 times &mdash; current mode is permanently saved to Flash memory as the default</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ======================= TARGET 1: CH32V003 ======================= -->
+<div class="page">
+  <h2>3. Target 1: WCH CH32V003 (1-Wire SWIO)</h2>
+  <p>The CH32V003 uses WCH's proprietary single-wire debug interface on pin <strong>PD1</strong>. This is the only way to flash a blank CH32V003 (it has no BOOT0 pin and no built-in UART bootloader).</p>
+  
+  <h3>Wiring Table</h3>
+  <table>
+    <tr><th>Pico Pin</th><th>Pico Function</th><th>CH32V003 Target</th><th>Notes</th></tr>
+    <tr><td>Pin 34</td><td><strong>GP28</strong></td><td><strong>PD1 (SWIO)</strong></td><td>Single-wire data line</td></tr>
+    <tr><td>&mdash;</td><td><strong>1k&Omega; Resistor</strong></td><td>Between <strong>3.3V</strong> and <strong>PD1</strong></td><td><strong>Mandatory pull-up resistor</strong></td></tr>
+    <tr><td>Pin 36</td><td>3V3 OUT</td><td>VDD (3.3V)</td><td>Powers the target chip</td></tr>
+    <tr><td>Pin 38</td><td>GND</td><td>GND</td><td>Common ground</td></tr>
+  </table>
+  <div class="callout callout-important">
+    <div class="callout-title">&#9888; CRITICAL: PULL-UP RESISTOR REQUIRED</div>
+    The <strong>1k&Omega; pull-up resistor</strong> between 3.3V and the PD1 pin is absolutely mandatory. Without it, the 1-wire protocol cannot pull the signal high fast enough and programming will fail.
+  </div>
+  <h3>Arduino IDE Steps</h3>
+  <ol class="steps">
+    <li>Tap the Mode Button (GP15) until the <span class="mode-indicator mode-3"><span class="dot"></span>Blue LED</span> is on (or the onboard LED blinks 3 times).</li>
+    <li>In Arduino IDE: <strong>Tools &gt; Board &gt; CH32V EVT Boards</strong> &rarr; <code>CH32V003 EVT</code></li>
+    <li><strong>Tools &gt; Port</strong> &rarr; Select your Pico's COM port</li>
+    <li><strong>Tools &gt; Programmer</strong> &rarr; <code>Pico Universal: PicoRVD (CH32V003 1-Wire SWIO)</code></li>
+    <li>Press <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">U</span> (Upload Using Programmer)</li>
+  </ol>
+</div>
+
+<!-- ======================= TARGET 2: STM32 ======================= -->
+<div class="page">
+  <h2>4. Target 2: STM32 Blue Pill / Black Pill (SWD)</h2>
+  <p>ARM Cortex-M chips use the standard 2-wire Serial Wire Debug (SWD) protocol. This includes STM32F103 (Blue Pill), STM32F401/F411 (Black Pill), STM32G0, and all Nucleo boards.</p>
+  
+  <h3>Wiring Table</h3>
+  <table>
+    <tr><th>Pico Pin</th><th>Pico Function</th><th>STM32 Target Pin</th><th>Notes</th></tr>
+    <tr><td>Pin 4</td><td><strong>GP2</strong></td><td><strong>SWCLK</strong> (Clock)</td><td>SWD Clock</td></tr>
+    <tr><td>Pin 5</td><td><strong>GP3</strong></td><td><strong>SWDIO</strong> (Data)</td><td>SWD Data</td></tr>
+    <tr><td>Pin 36</td><td>3V3 OUT</td><td>3.3V</td><td>Power target from Pico</td></tr>
+    <tr><td>Pin 8</td><td>GND</td><td>GND</td><td>Common ground</td></tr>
+    <tr><td>Pin 1</td><td>GP0 (UART TX)</td><td>RX (e.g. PA10)</td><td>Serial Monitor: Pico sends to target</td></tr>
+    <tr><td>Pin 2</td><td>GP1 (UART RX)</td><td>TX (e.g. PA9)</td><td>Serial Monitor: Pico listens to target</td></tr>
+  </table>
+  <h3>Arduino IDE Steps</h3>
+  <ol class="steps">
+    <li>Set the Pico to <span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span> (Green LED / 1 Blink).</li>
+    <li><strong>Tools &gt; Board &gt; STM32 boards groups</strong> &rarr; Select your board (e.g. <code>Generic STM32F1 series</code>)</li>
+    <li><strong>Tools &gt; Upload method</strong> &rarr; <code>OpenOCD</code></li>
+    <li><strong>Tools &gt; Programmer</strong> &rarr; <code>Pico Universal: CMSIS-DAP (SWD)</code></li>
+    <li>Press <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">U</span></li>
+  </ol>
+</div>
+
+<!-- ======================= TARGET 3: RP2040 ======================= -->
+<div class="page">
+  <h2>5. Target 3: Raspberry Pi Pico / RP2040 (SWD)</h2>
+  <p>Use your programmer Pico to flash and debug <em>another</em> Raspberry Pi Pico via the 3-pin SWD debug header on the target board.</p>
+  <h3>Wiring Table</h3>
+  <table>
+    <tr><th>Programmer Pico Pin</th><th>Function</th><th>Target Pico Pin</th></tr>
+    <tr><td>Pin 4 (GP2)</td><td><strong>SWCLK</strong></td><td>Target <strong>SWCLK</strong> (Debug Header)</td></tr>
+    <tr><td>Pin 5 (GP3)</td><td><strong>SWDIO</strong></td><td>Target <strong>SWDIO</strong> (Debug Header)</td></tr>
+    <tr><td>Pin 8 (GND)</td><td><strong>GND</strong></td><td>Target <strong>GND</strong> (Debug Header)</td></tr>
+    <tr><td>Pin 1 (GP0)</td><td>UART TX (Pico sends)</td><td>Target GP1 (UART0 RX)</td></tr>
+    <tr><td>Pin 2 (GP1)</td><td>UART RX (Pico listens)</td><td>Target GP0 (UART0 TX)</td></tr>
+  </table>
+  <h3>Arduino IDE Steps</h3>
+  <ol class="steps">
+    <li>Set the Pico to <span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span> (Green LED / 1 Blink).</li>
+    <li><strong>Tools &gt; Board &gt; Raspberry Pi RP2040 Boards</strong> &rarr; <code>Raspberry Pi Pico</code></li>
+    <li><strong>Tools &gt; Programmer</strong> &rarr; <code>Pico Universal: CMSIS-DAP (Picoprobe)</code></li>
+    <li>Press <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">U</span></li>
+  </ol>
+
+  <h2>6. Target 4: ESP32 / ESP32-S3 (4-Wire JTAG)</h2>
+  <p>Standard ESP32 microcontrollers support JTAG debugging via 4 dedicated pins.</p>
+  <h3>Wiring Table</h3>
+  <table>
+    <tr><th>Programmer Pico Pin</th><th>JTAG Signal</th><th>Standard ESP32</th><th>ESP32-S3</th></tr>
+    <tr><td>Pin 4 (GP2)</td><td><strong>TCK</strong> (Clock)</td><td>GPIO 13</td><td>GPIO 39</td></tr>
+    <tr><td>Pin 5 (GP3)</td><td><strong>TMS</strong> (Mode)</td><td>GPIO 14</td><td>GPIO 42</td></tr>
+    <tr><td>Pin 6 (GP4)</td><td><strong>TDI</strong> (Data In)</td><td>GPIO 12</td><td>GPIO 41</td></tr>
+    <tr><td>Pin 7 (GP5)</td><td><strong>TDO</strong> (Data Out)</td><td>GPIO 15</td><td>GPIO 40</td></tr>
+    <tr><td>Pin 8 (GND)</td><td><strong>GND</strong></td><td>GND</td><td>GND</td></tr>
+  </table>
+  <h3>Arduino IDE Steps</h3>
+  <ol class="steps">
+    <li>Set the Pico to <span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span> (Green LED / 1 Blink).</li>
+    <li><strong>Tools &gt; Programmer</strong> &rarr; <code>CMSIS-DAP</code></li>
+    <li>Press <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">U</span></li>
+  </ol>
+</div>
+
+<!-- ======================= SERIAL MONITOR ======================= -->
+<div class="page">
+  <h2>7. Serial Monitor (UART) Debugging</h2>
+  <p>The Pico programmer provides a built-in <strong>USB-to-UART serial bridge</strong> over the same USB cable, so you can view your target board's <code>Serial.println()</code> output without an additional FTDI adapter.</p>
+  <table>
+    <tr><th>Pico Programmer Pin</th><th>Function</th><th>Target Pin</th></tr>
+    <tr><td>Pin 1 (GP0)</td><td>UART TX (Pico sends data)</td><td>Target <strong>RX</strong></td></tr>
+    <tr><td>Pin 2 (GP1)</td><td>UART RX (Pico receives data)</td><td>Target <strong>TX</strong></td></tr>
+    <tr><td>Pin 8 (GND)</td><td>GND (Required)</td><td>Target <strong>GND</strong></td></tr>
+  </table>
+  <p>In Arduino IDE, open <strong>Tools &gt; Serial Monitor</strong> (<span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">M</span>) to see live output from your target board in real time.</p>
+
+  <h2>8. Arduino IDE One-Click Setup</h2>
+  <h3>Step 1: Install Board Packages</h3>
+  <p>In Arduino IDE, go to <strong>File &gt; Preferences</strong> and add these URLs to the <strong>Additional Boards Manager URLs</strong> field (comma-separated):</p>
+  <table>
+    <tr><th>Board Family</th><th>URL</th></tr>
+    <tr><td>WCH CH32V</td><td><code style="font-size:10px;">https://github.com/openwch/board_manager_files/raw/main/package_ch32v_index.json</code></td></tr>
+    <tr><td>STM32</td><td><code style="font-size:10px;">https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json</code></td></tr>
+    <tr><td>RP2040</td><td><code style="font-size:10px;">https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json</code></td></tr>
+    <tr><td>ESP32</td><td><code style="font-size:10px;">https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json</code></td></tr>
+  </table>
+  <p>Then go to <strong>Tools &gt; Board &gt; Boards Manager</strong> and install the cores you need.</p>
+  
+  <h3>Step 2: Run the Installer Script</h3>
+  <p>Double-click the installer script located in your project folder:</p>
+  <p><code>arduino\install_arduino_support.bat</code></p>
+  <p>It auto-detects your installed Arduino cores and installs the custom programmer recipes. <strong>Restart Arduino IDE</strong> after running.</p>
+</div>
+
+<!-- ======================= CHEAT SHEET ======================= -->
+<div class="page">
+  <h2>9. Quick Reference Cheat Sheet</h2>
+  <table>
+    <tr>
+      <th>Target Board</th>
+      <th>Pico Mode</th>
+      <th>Tools &gt; Programmer</th>
+      <th>Wiring Pins</th>
+      <th>Upload</th>
+    </tr>
+    <tr>
+      <td><strong>CH32V003</strong></td>
+      <td><span class="mode-indicator mode-3"><span class="dot"></span>Mode 3</span></td>
+      <td><code>PicoRVD</code></td>
+      <td>GP28 &rarr; PD1 (+1k&Omega;)</td>
+      <td><span class="kbd">Ctrl+Shift+U</span></td>
+    </tr>
+    <tr>
+      <td><strong>CH32V203/307</strong></td>
+      <td><span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span></td>
+      <td><code>CMSIS-DAP</code></td>
+      <td>GP2/GP3 &rarr; SWCLK/SWDIO</td>
+      <td><span class="kbd">Ctrl+Shift+U</span></td>
+    </tr>
+    <tr>
+      <td><strong>STM32</strong></td>
+      <td><span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span></td>
+      <td><code>CMSIS-DAP (SWD)</code></td>
+      <td>GP2/GP3 &rarr; SWCLK/SWDIO</td>
+      <td><span class="kbd">Ctrl+Shift+U</span></td>
+    </tr>
+    <tr>
+      <td><strong>RP2040</strong></td>
+      <td><span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span></td>
+      <td><code>CMSIS-DAP (Picoprobe)</code></td>
+      <td>GP2/GP3 &rarr; SWCLK/SWDIO</td>
+      <td><span class="kbd">Ctrl+Shift+U</span></td>
+    </tr>
+    <tr>
+      <td><strong>ESP32 (JTAG)</strong></td>
+      <td><span class="mode-indicator mode-1"><span class="dot"></span>Mode 1</span></td>
+      <td><code>CMSIS-DAP</code></td>
+      <td>GP2/3/4/5 &rarr; TCK/TMS/TDI/TDO</td>
+      <td><span class="kbd">Ctrl+Shift+U</span></td>
+    </tr>
+  </table>
+
+  <h2>10. Electrical Safety Rules</h2>
+  <div class="callout callout-important">
+    <div class="callout-title">&#9888; VOLTAGE WARNING (3.3V LOGIC)</div>
+    The Raspberry Pi Pico GPIO pins are strictly <strong>3.3V</strong> and are <strong>NOT 5V tolerant</strong>. If your target board runs at 5V (e.g., Arduino Uno/Nano), you <strong>must</strong> use a bidirectional logic level shifter on all signal lines. Feeding 5V into the Pico will permanently destroy the RP2040.
+  </div>
+  <div class="callout callout-important">
+    <div class="callout-title">&#9888; COMMON GROUND</div>
+    Always connect <strong>GND</strong> between the Pico and your target board, even if both boards are powered by separate USB ports. Without a common ground reference, communication will be unreliable and you risk hardware damage.
+  </div>
+  <div class="callout callout-important">
+    <div class="callout-title">&#9888; CH32V003 PULL-UP RESISTOR</div>
+    Never omit the <strong>1k&Omega; pull-up resistor</strong> on the CH32V003 PD1 line. Without it, the single-wire protocol cannot operate and the chip will not respond.
+  </div>
+
+  <footer>
+    Pico Universal Programmer &amp; Multi-Debugger &mdash; User Manual v1.1<br>
+    Open-Source Hardware &amp; Software &mdash; &copy; 2026
+  </footer>
+</div>
+
+</body>
+</html>

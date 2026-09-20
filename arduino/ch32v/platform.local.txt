@@ -1,0 +1,9 @@
+# =============================================================================
+# Arduino IDE Upload Recipe for PicoRVD GDB Tool
+# =============================================================================
+
+tools.picorvd_tool.path={runtime.tools.riscv-none-embed-gcc.path}/bin
+tools.picorvd_tool.cmd=riscv-none-embed-gdb
+tools.picorvd_tool.program.pattern="{path}/{cmd}" -nx --batch -ex "target extended-remote \\\\.\\{serial.port}" -ex "load" -ex "detach" -ex "quit" "{build.path}/{build.project_name}.elf"
+tools.picorvd_tool.program.params.verbose=
+tools.picorvd_tool.program.params.quiet=

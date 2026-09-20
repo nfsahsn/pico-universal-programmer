@@ -1,0 +1,9 @@
+# =============================================================================
+# Arduino IDE Custom Programmers for STM32 (Pico Universal Programmer)
+# =============================================================================
+
+pico_cmsis_dap.name=Pico Universal: CMSIS-DAP (SWD)
+pico_cmsis_dap.communication=usb
+pico_cmsis_dap.protocol=cmsis-dap
+pico_cmsis_dap.program.tool=openocd
+pico_cmsis_dap.program.extra_params=-f interface/cmsis-dap.cfg -c "transport select swd"

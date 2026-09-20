@@ -1,0 +1,16 @@
+# =============================================================================
+# Arduino IDE Custom Programmers for WCH CH32V (Pico Universal Programmer)
+# =============================================================================
+
+# Mode 3: WCH CH32V003 1-Wire SWIO via Pico (PicoRVD)
+picorvd.name=Pico Universal: PicoRVD (CH32V003 1-Wire SWIO)
+picorvd.communication=serial
+picorvd.protocol=gdb
+picorvd.program.tool=picorvd_tool
+
+# Mode 1: WCH CH32V103 / V203 / V307 / X035 SWD/JTAG via Pico (CMSIS-DAP)
+pico_cmsis_dap.name=Pico Universal: CMSIS-DAP (CH32V203/V307 SWD)
+pico_cmsis_dap.communication=usb
+pico_cmsis_dap.protocol=cmsis-dap
+pico_cmsis_dap.program.tool=openocd
+pico_cmsis_dap.program.extra_params=-f interface/cmsis-dap.cfg -f target/wch-riscv.cfg
