@@ -35,6 +35,9 @@ button_event_t button_poll(void);
  */
 bool button_is_pressed(void);
 
+/** True throughout press/release debounce, so handover cannot lose an event. */
+bool button_is_busy(void);
+
 #ifdef __cplusplus
 }
 #endif

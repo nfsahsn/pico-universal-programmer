@@ -1,77 +1,81 @@
-/**
- * @file main.c
- * @brief Entry point and mode supervisor for the Pico Universal Programmer.
- */
-
+/** Startup selection and recovery UI. The mode stays locked after handover. */
 #include "config/app_config.h"
-#include "config/memory_map.h"
 #include "include/bootloader.h"
 #include "include/button.h"
 #include "include/led_indicator.h"
 #include "include/storage.h"
+#include "include/probe_controls.h"
 #include "pico/stdlib.h"
-#include "pico/time.h"
-#include "hardware/watchdog.h"
-#include "hardware/structs/watchdog.h"
-#include "include/image_validator.h"
 
 int main(void) {
-    /* INTERCEPT: Hardware reboot from bootloader_jump_to_mode. */
-    uint32_t jump_req = watchdog_hw->scratch[7];
-    if ((jump_req & 0xFFFFFF00) == 0xDEAD0000) {
-        probe_mode_t mode = (probe_mode_t)(jump_req & 0xFF);
-        watchdog_hw->scratch[7] = 0;
-
-        uint32_t slot_addr;
-        if (mode == MODE_CMSIS_DAP) slot_addr = SLOT_1_CMSIS_DAP_ADDR;
-        else if (mode == MODE_BLACKMAGIC) slot_addr = SLOT_2_BLACKMAGIC_ADDR;
-        else if (mode == MODE_PICORVD) slot_addr = SLOT_3_PICORVD_ADDR;
-        else slot_addr = SLOT_1_CMSIS_DAP_ADDR;
-
-        uint32_t msp = image_get_initial_msp(slot_addr);
-        uint32_t entry = image_get_entry_point(slot_addr);
-        
-        *((volatile uint32_t *)0xE000ED08) = slot_addr + 0x100;
-        
-        __asm volatile (
-            "msr msp, %0\n"
-            "isb\n"
-            "bx %1\n"
-            : : "r"(msp), "r"(entry) : "memory"
-        );
-        while(1);
-    }
-
     button_init();
     led_init();
     storage_init();
-
     probe_mode_t current_mode = storage_get_active_mode();
     led_set_mode(current_mode);
-
+    bool probe_fault = probe_controls_take_fault_request();
+    probe_mode_t save_mode;
+    bool runtime_save = probe_controls_take_save_request(&save_mode);
+    bool save_failed = false;
+    if (runtime_save) {
+        current_mode = save_mode;
+        storage_set_active_mode(current_mode);
+        led_set_mode(current_mode);
+        if (bootloader_mode_is_valid(current_mode) && storage_save_default_mode(current_mode)) {
+            led_flash_save_confirmation();
+        } else {
+            led_set_error();
+            save_failed = true;
+        }
+    }
+    bool boot_attempted = bootloader_recovery_required() || save_failed || probe_fault;
+    if (boot_attempted) {
+        led_set_error();
+    }
     uint32_t last_activity_time = to_ms_since_boot(get_absolute_time());
 
     while (true) {
         led_tick();
+        bool was_busy = button_is_busy();
         button_event_t event = button_poll();
-
+        uint32_t now = to_ms_since_boot(get_absolute_time());
+        /* Include the entire debounce/release interval in activity. Otherwise
+         * release just after the deadline can boot before a short-press event. */
+        if (was_busy || button_is_busy()) {
+            last_activity_time = now;
+        }
+        /* A runtime long press reboots while still held. Consume its release
+         * without treating it as another save or mode change. */
+        if (runtime_save) {
+            if (!button_is_busy()) runtime_save = false;
+            event = BUTTON_EVENT_NONE;
+        }
         if (event == BUTTON_EVENT_SHORT_PRESS) {
             current_mode = (probe_mode_t)((current_mode + 1) % MODE_COUNT);
             storage_set_active_mode(current_mode);
             led_set_mode(current_mode);
-            last_activity_time = to_ms_since_boot(get_absolute_time());
+            last_activity_time = now;
+            boot_attempted = false;
         } else if (event == BUTTON_EVENT_LONG_PRESS) {
-            storage_save_default_mode(current_mode);
-            led_flash_save_confirmation();
+            if (bootloader_mode_is_valid(current_mode) && storage_save_default_mode(current_mode)) {
+                led_flash_save_confirmation();
+                boot_attempted = false;
+            } else {
+                led_set_error();
+                boot_attempted = true;
+            }
             last_activity_time = to_ms_since_boot(get_absolute_time());
         }
-
-        uint32_t now = to_ms_since_boot(get_absolute_time());
-        if (!button_is_pressed() && ((now - last_activity_time) >= 5000)) {
-            sleep_ms(50);
-            bootloader_jump_to_mode(current_mode);
+        now = to_ms_since_boot(get_absolute_time());
+        if (!boot_attempted && !button_is_busy() &&
+            (now - last_activity_time) >= BOOT_HANDOVER_DELAY_MS) {
+            /* On invalid/missing images retain button control and show error.
+             * A successful jump request never returns. */
+            boot_attempted = true;
+            if (!bootloader_jump_to_mode(current_mode)) {
+                led_set_error();
+            }
         }
+        sleep_ms(1);
     }
-
-    return 0;
 }

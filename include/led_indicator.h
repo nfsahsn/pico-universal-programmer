@@ -25,21 +25,22 @@ void led_init(void);
  */
 void led_set_mode(probe_mode_t mode);
 
+/** Display the locked running mode with a steady onboard status LED. */
+void led_set_running(probe_mode_t mode);
+
 /**
  * @brief Non-blocking tick function to update blink sequences.
  * Must be called repeatedly in the event loop.
  */
 void led_tick(void);
 
-/**
- * @brief Flashes LEDs rapidly to confirm settings saved to Flash memory.
- */
-void led_flash_save_confirmation(void);
+/** Blink only the onboard LED on error, retaining the selected mode LED. */
+void led_set_error(void);
 
 /**
- * @brief Flashes a distinct error pattern if a target image is missing or invalid.
+ * @brief Flashes only the onboard LED to confirm settings saved to Flash memory.
  */
-void led_show_error(void);
+void led_flash_save_confirmation(void);
 
 #ifdef __cplusplus
 }

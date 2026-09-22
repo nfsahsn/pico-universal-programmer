@@ -20,6 +20,8 @@ static blink_state_t s_blink_state = BLINK_STATE_IDLE;
 static uint32_t s_last_transition_time = 0;
 static uint8_t s_blink_count = 0;
 static uint8_t s_target_blinks = 1;
+static bool s_error = false;
+static bool s_error_phase = false;
 
 static void update_discrete_leds(probe_mode_t mode) {
     gpio_put(PIN_LED_MODE1_DAP, (mode == MODE_CMSIS_DAP));
@@ -45,10 +47,11 @@ void led_init(void) {
 }
 
 void led_set_mode(probe_mode_t mode) {
-    if (mode >= MODE_COUNT) {
+    if ((unsigned)mode >= MODE_COUNT) {
         mode = MODE_CMSIS_DAP;
     }
     s_active_mode = mode;
+    s_error = false;
     s_target_blinks = (uint8_t)mode + 1; /* Mode 0 -> 1 blink, Mode 1 -> 2 blinks, Mode 2 -> 3 blinks */
     s_blink_count = 0;
     s_blink_state = BLINK_STATE_PULSE_ON;
@@ -58,8 +61,22 @@ void led_set_mode(probe_mode_t mode) {
     update_discrete_leds(mode);
 }
 
+void led_set_running(probe_mode_t mode) {
+    led_set_mode(mode);
+    s_blink_state = BLINK_STATE_IDLE;
+}
+
 void led_tick(void) {
     uint32_t now = to_ms_since_boot(get_absolute_time());
+
+    if (s_error) {
+        if ((now - s_last_transition_time) >= 250u) {
+            s_last_transition_time = now;
+            s_error_phase = !s_error_phase;
+            gpio_put(PIN_ONBOARD_LED, s_error_phase);
+        }
+        return;
+    }
 
     switch (s_blink_state) {
         case BLINK_STATE_PULSE_ON:
@@ -98,35 +115,21 @@ void led_tick(void) {
     }
 }
 
+void led_set_error(void) {
+    s_error = true;
+    s_error_phase = true;
+    s_last_transition_time = to_ms_since_boot(get_absolute_time());
+    gpio_put(PIN_ONBOARD_LED, 1);
+    update_discrete_leds(s_active_mode);
+}
+
 void led_flash_save_confirmation(void) {
     /* 5 rapid blinks to confirm write to flash */
     for (int i = 0; i < 5; i++) {
         gpio_put(PIN_ONBOARD_LED, 1);
-        gpio_put(PIN_LED_MODE1_DAP, 1);
-        gpio_put(PIN_LED_MODE2_BMP, 1);
-        gpio_put(PIN_LED_MODE3_WCH, 1);
         sleep_ms(60);
         gpio_put(PIN_ONBOARD_LED, 0);
-        gpio_put(PIN_LED_MODE1_DAP, 0);
-        gpio_put(PIN_LED_MODE2_BMP, 0);
-        gpio_put(PIN_LED_MODE3_WCH, 0);
         sleep_ms(60);
     }
-    update_discrete_leds(s_active_mode);
-}
-
-void led_show_error(void) {
-    /* 1-second alternating error pattern (easy to see) */
-    while (1) {
-        gpio_put(PIN_ONBOARD_LED, 1);
-        gpio_put(PIN_LED_MODE1_DAP, 1);
-        gpio_put(PIN_LED_MODE2_BMP, 0);
-        gpio_put(PIN_LED_MODE3_WCH, 0);
-        sleep_ms(1000);
-        gpio_put(PIN_ONBOARD_LED, 0);
-        gpio_put(PIN_LED_MODE1_DAP, 0);
-        gpio_put(PIN_LED_MODE2_BMP, 1);
-        gpio_put(PIN_LED_MODE3_WCH, 1);
-        sleep_ms(1000);
-    }
+    led_set_mode(s_active_mode);
 }

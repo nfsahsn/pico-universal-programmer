@@ -1,85 +1,71 @@
-# Hardware Wiring & Schematic Guide
+# Development firmware wiring
 
-This document specifies the hardware wiring for the **Pico Universal Programmer**, including the mode selector button, status LEDs, and target connections.
+This pin assignment describes the integrated source builds for the original
+RP2040 Pico. It is not a hardware qualification report. Use GPIO names below;
+confirm header positions and target signals against your exact board schematic.
+Legacy UF2 files and stock Debug Probe firmware can use different assignments.
 
----
+## Controls
 
-## 1. Programmer Control Hardware
+Connect a normally open button between GP15 and GND. The firmware enables its
+internal pull-up. During startup, each short press/release selects the next mode;
+a hold of at least two seconds saves the selected valid mode as the default.
+Five seconds after the button is fully released and debounced, the selected probe
+starts. It ignores the mode button until the Pico is reset or power-cycled.
+For a reset button, use a separate normally open switch between Pico RUN and GND;
+BOOTSEL is for firmware loading, not mode selection. A reset disconnects any debug
+session, so finish the upload before resetting to select another mode.
 
-```
-                         Raspberry Pi Pico (RP2040)
-                       +----------------------------+
-                       |                            |
-       GND ------------| Pin 38 (GND)               |
-                       |                            |
-[ Pushbutton ] --------| Pin 20 (GP15) [Mode Button]| (Internal pull-up enabled)
-                       |                            |
-[ 330Ω ] + [LED Green]-| Pin 21 (GP16) [Mode 1: DAP]| (Anode to GP16, Cathode to GND)
-                       |                            |
-[ 330Ω ] + [LED Yellow]| Pin 22 (GP17) [Mode 2: BMP]| (Anode to GP17, Cathode to GND)
-                       |                            |
-[ 330Ω ] + [LED Blue] -| Pin 24 (GP18) [Mode 3: WCH]| (Anode to GP18, Cathode to GND)
-                       +----------------------------+
-```
+Optional mode LEDs use GP16 (CMSIS-DAP), GP17 (Black Magic), and GP18 (PicoRVD).
+Connect each GPIO through a 330-ohm resistor to its LED anode, with the cathode
+at GND. GP25 drives the original Pico onboard indicator. Pico W is not the
+configured board for these builds.
 
-### Controls:
-* **Short Press GP15 (< 1s):** Advances to next mode (`Mode 1 -> Mode 2 -> Mode 3 -> Mode 1`).
-* **Long Press GP15 (> 2s):** Writes current mode into Flash memory as the persistent default power-on mode.
-* **Onboard LED (GP25):** 
-  * 1 Blink = Mode 1 (CMSIS-DAP)
-  * 2 Blinks = Mode 2 (Black Magic Probe)
-  * 3 Blinks = Mode 3 (PicoRVD)
+The selected external LED stays on; the other two stay off. GP25 blinks the mode
+number during selection and becomes steady when the probe starts. Saves flash
+only GP25 five times; an error toggles only GP25 every 250 ms and keeps selection
+available. Errors do not advance the mode. If GP25 continues the error pattern,
+reflash the complete `build/pico_universal_development.uf2`, not the supervisor-only
+UF2 or a legacy root-level artifact. If selection never reaches its timeout,
+check that GP15 is high when the button is released and low when pressed.
 
----
+## CMSIS-DAP and Black Magic
 
-## 2. Target Wiring by Board Family
+| Pico GPIO | SWD function | JTAG function |
+|---|---|---|
+| GP2 | SWCLK | TCK |
+| GP3 | SWDIO | TMS |
+| GP4 | Unused | TDI: probe output to target input |
+| GP5 | Unused | TDO: target output to probe input |
+| GP6 | Target nRESET | Target nRESET |
+| GP7 | Unused | nTRST, CMSIS-DAP only |
+| GP0 | UART TX to target RX | UART TX to target RX |
+| GP1 | UART RX from target TX | UART RX from target TX |
+| GND | Common target ground | Common target ground |
 
-### A. WCH CH32V003 (1-Wire SWIO)
+Reset outputs are released by changing the GPIO to input and asserted low.
+Black Magic has no GP7 binding or target-voltage measurement in this board port.
+JTAG GPIO support in the CMSIS-DAP build does not establish that a particular
+ESP32, FPGA, or WCH device can be programmed: host configuration and target
+support must also be qualified. No board-specific JTAG mapping is assumed here.
 
-```
-Pico Programmer                                 Target CH32V003
----------------                                 ---------------
-Pin 34 (GP28)  -------------------------------- Pin 8 (PD1 / SWIO)
-                      |
-                   [ 1kΩ ] (Mandatory Pull-Up)
-                      |
-Pin 36 (3V3)   -------+------------------------ Pin 2 (VDD / 3.3V)
-Pin 38 (GND)   -------------------------------- Pin 7 (GND)
-```
+## PicoRVD / CH32V003
 
-> [!IMPORTANT]
-> The **1kΩ pull-up resistor** between 3.3V and PD1 is mandatory. Without it, the 1-wire protocol cannot pull the signal high fast enough and communication will fail.
+Connect GP28 to the target SWIO signal (PD1), connect grounds, and fit a 1-kilohm
+pull-up from SWIO to the target's 3.3 V rail, as specified by the pinned PicoRVD
+source README. Check the target package for the physical PD1, supply, and ground
+pins; package pin numbers are not interchangeable.
 
----
+GP0 provides PicoRVD diagnostic UART output at 1,000,000 baud. UART command input
+on GP1 is disabled in this candidate; the upstream development console could
+erase flash or run destructive tests. These pins are not a target UART bridge
+in this mode.
 
-### B. ARM Cortex-M SWD (STM32, RP2040, SAMD, nRF52)
+## Electrical scope
 
-| Pico Pin | Pico GPIO | Target Function | Target Pin (e.g., STM32) |
-| :--- | :--- | :--- | :--- |
-| **Pin 4** | **GP2** | **SWCLK** | SWCLK |
-| **Pin 5** | **GP3** | **SWDIO** | SWDIO |
-| **Pin 8** | **GND** | **GND** | Common Ground |
-| **Pin 36**| **3V3** | **VDD (Optional)** | 3.3V Power |
-| **Pin 1** | **GP0** | **UART TX (Listen)** | Target TX (for Serial Monitor) |
-| **Pin 2** | **GP1** | **UART RX (Send)**   | Target RX (for Serial Monitor) |
-
----
-
-### C. Standard 4-Wire JTAG (ESP32, FPGAs, WCH CH32V307)
-
-| Pico Pin | Pico GPIO | JTAG Signal | ESP32 Target Pin |
-| :--- | :--- | :--- | :--- |
-| **Pin 4** | **GP2** | **TCK (Clock)** | GPIO 13 |
-| **Pin 5** | **GP3** | **TMS (Mode)**  | GPIO 14 |
-| **Pin 6** | **GP4** | **TDI (Data In)** | GPIO 12 |
-| **Pin 7** | **GP5** | **TDO (Data Out)**| GPIO 15 |
-| **Pin 8** | **GND** | **GND** | GND |
-
----
-
-## 3. Voltage Safety Precautions
-
-> [!WARNING]
-> **RP2040 GPIO pins are strictly 3.3V (NOT 5V tolerant).**
-> - If your target board runs at **5V**, you **must use a bidirectional logic level shifter** on all signal lines (SWCLK, SWDIO, SWIO, TDI, TDO, UART).
-> - Feeding 5V into the Pico will permanently damage the RP2040 microcontroller.
+The current design assumes 3.3 V target signalling and a common ground. It has
+no integrated level conversion, target-voltage sensing, or target-power control.
+Do not connect 5 V signals directly. Power the target from an appropriate supply;
+connecting the Pico supply to an already powered target is not part of this
+wiring specification. Other target voltages require a separately reviewed debug
+interface circuit and qualification.

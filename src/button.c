@@ -33,6 +33,10 @@ bool button_is_pressed(void) {
     return !gpio_get(PIN_MODE_BUTTON);
 }
 
+bool button_is_busy(void) {
+    return s_state != STATE_RELEASED || button_is_pressed();
+}
+
 button_event_t button_poll(void) {
     uint32_t now = to_ms_since_boot(get_absolute_time());
     bool raw_pressed = button_is_pressed();

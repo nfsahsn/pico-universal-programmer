@@ -18,8 +18,11 @@ extern "C" {
  * @brief Validates if a target flash slot contains a valid executable image.
  *
  * Checks:
- * 1. Initial Stack Pointer (MSP) points inside RP2040 SRAM (0x20000000 - 0x20042000).
- * 2. Reset Vector points inside the target slot's flash memory range and has Thumb bit set (bit 0 == 1).
+ * 1. Slot geometry and versioned descriptor identify the requested probe mode.
+ * 2. Descriptor and complete supplied image pass CRC-32 integrity checks.
+ * 3. MSP is 8-byte aligned in (0x20000000, 0x20042000].
+ * 4. Reset vector is Thumb code inside the verified image, not erased flash.
+ * CRC protects against accidental corruption, not malicious replacement.
  *
  * @param slot_addr The absolute flash memory address of the target slot.
  * @param slot_size The size of the slot in bytes.

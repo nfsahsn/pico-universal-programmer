@@ -1,3 +1,7 @@
+> **Legacy guide: not a verified upload procedure.** The original installer and
+> recipes below are incomplete. For current Linux work, use
+> [the development integration guide](ARDUINO_LINUX.md).
+
 # Arduino IDE Workflow Guide (Pico Universal Programmer)
 
 This guide walks you through using the **Pico Universal Programmer** exclusively inside the **Arduino IDE** for all supported target boards.

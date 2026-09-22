@@ -47,7 +47,7 @@ extern "C" {
 #define LED_CYCLE_PAUSE_MS              (800U)   /**< Pause after complete cycle */
 
 /* Delay before jumping to target firmware after selection (gives visual feedback) */
-#define BOOT_HANDOVER_DELAY_MS          (2500U)
+#define BOOT_HANDOVER_DELAY_MS          (5000U)
 
 #ifdef __cplusplus
 }

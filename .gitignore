@@ -27,3 +27,9 @@ Makefile
 # Python cache
 __pycache__/
 *.pyc
+
+# Local toolchains and documentation dependencies
+.venv/
+.tools/
+node_modules/
+.kilo/

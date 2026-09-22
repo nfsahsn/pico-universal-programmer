@@ -1,0 +1,14 @@
+{
+  "flash_base": 268435456,
+  "flash_size": 2097152,
+  "page_size": 256,
+  "sector_size": 4096,
+  "partitions": [
+    {"name": "bootloader", "macro": "SLOT_BOOTLOADER", "offset": 0, "size": 61440, "executable": true},
+    {"name": "config", "macro": "SLOT_CONFIG", "offset": 61440, "size": 4096, "executable": false},
+    {"name": "cmsis_dap", "macro": "SLOT_1_CMSIS_DAP", "offset": 65536, "size": 524288, "executable": true},
+    {"name": "blackmagic", "macro": "SLOT_2_BLACKMAGIC", "offset": 589824, "size": 524288, "executable": true},
+    {"name": "picorvd", "macro": "SLOT_3_PICORVD", "offset": 1114112, "size": 524288, "executable": true},
+    {"name": "config_backup", "macro": "SLOT_CONFIG_BACKUP", "offset": 1638400, "size": 4096, "executable": false}
+  ]
+}
