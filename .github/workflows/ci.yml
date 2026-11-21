@@ -1,0 +1,248 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+
+      - name: Install pytest
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Validate flash_layout.h drift check
+        run: |
+          python tools/gen_flash_layout.py --check
+          mkdir -p build/ci_check
+          python tools/gen_flash_layout.py --in config/flash_layout.json --out build/ci_check/flash_layout.h
+          cmp -s config/flash_layout.h build/ci_check/flash_layout.h
+          rm -rf build/ci_check
+
+      - name: Run Python test suite
+        run: |
+          python -m unittest discover -s tests/python -v
+          python -m pytest tests/python -v
+
+      - name: Verify Linux udev rules syntax
+        run: udevadm verify --resolve-names=never linux/60-pico-universal.rules
+
+      - name: Check C/C++ configuration headers
+        run: |
+          cc -std=c11 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c config/flash_layout.h
+          cc -std=c11 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c config/board_pinout.h
+          cc -std=c11 -Wall -Wextra -Werror -Wundef -DPU_BOARD_PRO_PCB=1 -DPU_USB_PID=0x1050u -fsyntax-only -x c config/board_pinout.h
+          c++ -std=c++17 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c++ config/flash_layout.h
+          c++ -std=c++17 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c++ config/board_pinout.h
+          c++ -std=c++17 -Wall -Wextra -Werror -Wundef -DPU_BOARD_PRO_PCB=1 -DPU_USB_PID=0x1050u -fsyntax-only -x c++ config/board_pinout.h
+
+      - name: Run host C/C++ ASan+UBSan tests (when present)
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=1:strict_string_checks=1
+          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+        run: |
+          set -euo pipefail
+          if [ -f tests/host_c/run_tests.sh ]; then
+            bash tests/host_c/run_tests.sh
+          elif [ -f tests/host_c/CMakeLists.txt ]; then
+            cmake -S tests/host_c -B build/host_c_cmake \
+              -DCMAKE_C_FLAGS="-DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -fsanitize=address,undefined -fno-omit-frame-pointer" \
+              -DCMAKE_CXX_FLAGS="-DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -fsanitize=address,undefined -fno-omit-frame-pointer"
+            cmake --build build/host_c_cmake -j
+            ctest --test-dir build/host_c_cmake --output-on-failure
+          elif compgen -G "tests/host_c/test_*.c" > /dev/null || compgen -G "tests/host_c/test_*.cpp" > /dev/null; then
+            mkdir -p build/host_c/objs build/host_c/bins
+            obj_files=()
+            for src in bootloader/*.c firmware/*.c; do
+              [ -f "$src" ] || continue
+              case "$(basename "$src")" in main.c) continue ;; esac
+              obj="build/host_c/objs/$(echo "$src" | tr '/' '_').o"
+              cc -std=c11 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -I. -Iconfig -Iinclude -c "$src" -o "$obj"
+              obj_files+=("$obj")
+            done
+            for src in bootloader/*.cpp firmware/*.cpp; do
+              [ -f "$src" ] || continue
+              case "$(basename "$src")" in main.cpp) continue ;; esac
+              obj="build/host_c/objs/$(echo "$src" | tr '/' '_').o"
+              c++ -std=c++17 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -I. -Iconfig -Iinclude -c "$src" -o "$obj"
+              obj_files+=("$obj")
+            done
+            lib_args=()
+            if [ "${#obj_files[@]}" -gt 0 ]; then
+              ar rcs build/host_c/libpu_host.a "${obj_files[@]}"
+              lib_args=(build/host_c/libpu_host.a build/host_c/libpu_host.a)
+            fi
+            for tsrc in tests/host_c/test_*.c; do
+              [ -f "$tsrc" ] || continue
+              tobj="build/host_c/objs/$(basename "${tsrc%.c}").c.o"
+              bin="build/host_c/bins/$(basename "${tsrc%.c}")"
+              cc -std=c11 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -I. -Iconfig -Iinclude -c "$tsrc" -o "$tobj"
+              c++ -Wall -Wextra -Werror -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer "$tobj" "${lib_args[@]}" -o "$bin"
+              "$bin"
+            done
+            for tsrc in tests/host_c/test_*.cpp; do
+              [ -f "$tsrc" ] || continue
+              tobj="build/host_c/objs/$(basename "${tsrc%.cpp}").cpp.o"
+              bin="build/host_c/bins/$(basename "${tsrc%.cpp}")"
+              c++ -std=c++17 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -I. -Iconfig -Iinclude -c "$tsrc" -o "$tobj"
+              c++ -std=c++17 -Wall -Wextra -Werror -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer "$tobj" "${lib_args[@]}" -o "$bin"
+              "$bin"
+            done
+          else
+            echo "No host C/C++ tests present yet; skipping."
+          fi
+
+      - name: Set up Go
+        if: hashFiles('host/go.mod') != ''
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "1.22.x"
+          cache: false
+
+      - name: Run Go race tests
+        if: hashFiles('host/go.mod') != ''
+        working-directory: host
+        run: go test -race -v ./...
+
+  verify-windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Configure git LF line endings
+        run: git config --global core.autocrlf false
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+
+      - name: Install pytest
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Validate flash_layout.h drift check and Python tests
+        run: |
+          python tools/gen_flash_layout.py --check
+          python -m unittest discover -s tests/python -v
+          python -m pytest tests/python -v
+
+      - name: Check C/C++ configuration headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v gcc >/dev/null 2>&1 && command -v g++ >/dev/null 2>&1; then
+            CC_BIN=gcc
+            CXX_BIN=g++
+          elif command -v clang >/dev/null 2>&1 && command -v clang++ >/dev/null 2>&1; then
+            CC_BIN=clang
+            CXX_BIN=clang++
+          else
+            echo "Neither GCC/MinGW nor Clang found on windows-latest" >&2
+            exit 1
+          fi
+          "$CC_BIN" -std=c11 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c config/flash_layout.h
+          "$CC_BIN" -std=c11 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c config/board_pinout.h
+          "$CC_BIN" -std=c11 -Wall -Wextra -Werror -Wundef -DPU_BOARD_PRO_PCB=1 -DPU_USB_PID=0x1050u -fsyntax-only -x c config/board_pinout.h
+          "$CXX_BIN" -std=c++17 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c++ config/flash_layout.h
+          "$CXX_BIN" -std=c++17 -Wall -Wextra -Werror -Wundef -fsyntax-only -x c++ config/board_pinout.h
+          "$CXX_BIN" -std=c++17 -Wall -Wextra -Werror -Wundef -DPU_BOARD_PRO_PCB=1 -DPU_USB_PID=0x1050u -fsyntax-only -x c++ config/board_pinout.h
+
+      - name: Run host C/C++ tests (when present)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v gcc >/dev/null 2>&1 && command -v g++ >/dev/null 2>&1; then
+            CC_BIN=gcc
+            CXX_BIN=g++
+            AR_BIN=ar
+          elif command -v clang >/dev/null 2>&1 && command -v clang++ >/dev/null 2>&1; then
+            CC_BIN=clang
+            CXX_BIN=clang++
+            AR_BIN=llvm-ar
+          else
+            echo "Neither GCC/MinGW nor Clang found on windows-latest" >&2
+            exit 1
+          fi
+          if [ -f tests/host_c/run_tests.sh ]; then
+            bash tests/host_c/run_tests.sh
+          elif [ -f tests/host_c/CMakeLists.txt ]; then
+            cmake_gen=()
+            if command -v ninja >/dev/null 2>&1; then
+              cmake_gen=(-G Ninja)
+            else
+              cmake_gen=(-G "MinGW Makefiles")
+            fi
+            cmake "${cmake_gen[@]}" -S tests/host_c -B build/host_c_cmake \
+              -DCMAKE_C_COMPILER="$CC_BIN" \
+              -DCMAKE_CXX_COMPILER="$CXX_BIN" \
+              -DCMAKE_C_FLAGS="-DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef" \
+              -DCMAKE_CXX_FLAGS="-DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef"
+            cmake --build build/host_c_cmake -j
+            ctest --test-dir build/host_c_cmake --output-on-failure
+          elif compgen -G "tests/host_c/test_*.c" > /dev/null || compgen -G "tests/host_c/test_*.cpp" > /dev/null; then
+            mkdir -p build/host_c/objs build/host_c/bins
+            obj_files=()
+            for src in bootloader/*.c firmware/*.c; do
+              [ -f "$src" ] || continue
+              case "$(basename "$src")" in main.c) continue ;; esac
+              obj="build/host_c/objs/$(echo "$src" | tr '/' '_').o"
+              "$CC_BIN" -std=c11 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -I. -Iconfig -Iinclude -c "$src" -o "$obj"
+              obj_files+=("$obj")
+            done
+            for src in bootloader/*.cpp firmware/*.cpp; do
+              [ -f "$src" ] || continue
+              case "$(basename "$src")" in main.cpp) continue ;; esac
+              obj="build/host_c/objs/$(echo "$src" | tr '/' '_').o"
+              "$CXX_BIN" -std=c++17 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -I. -Iconfig -Iinclude -c "$src" -o "$obj"
+              obj_files+=("$obj")
+            done
+            lib_args=()
+            if [ "${#obj_files[@]}" -gt 0 ]; then
+              "$AR_BIN" rcs build/host_c/libpu_host.a "${obj_files[@]}"
+              lib_args=(build/host_c/libpu_host.a build/host_c/libpu_host.a)
+            fi
+            for tsrc in tests/host_c/test_*.c; do
+              [ -f "$tsrc" ] || continue
+              tobj="build/host_c/objs/$(basename "${tsrc%.c}").c.o"
+              bin="build/host_c/bins/$(basename "${tsrc%.c}").exe"
+              "$CC_BIN" -std=c11 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -I. -Iconfig -Iinclude -c "$tsrc" -o "$tobj"
+              "$CXX_BIN" -Wall -Wextra -Werror -g -O1 "$tobj" "${lib_args[@]}" -o "$bin"
+              "$bin"
+            done
+            for tsrc in tests/host_c/test_*.cpp; do
+              [ -f "$tsrc" ] || continue
+              tobj="build/host_c/objs/$(basename "${tsrc%.cpp}").cpp.o"
+              bin="build/host_c/bins/$(basename "${tsrc%.cpp}").exe"
+              "$CXX_BIN" -std=c++17 -DPU_HOST_TEST=1 -Wall -Wextra -Werror -Wundef -g -O1 -I. -Iconfig -Iinclude -c "$tsrc" -o "$tobj"
+              "$CXX_BIN" -std=c++17 -Wall -Wextra -Werror -g -O1 "$tobj" "${lib_args[@]}" -o "$bin"
+              "$bin"
+            done
+          else
+            echo "No host C/C++ tests present yet; skipping."
+          fi
+
+      - name: Set up Go
+        if: hashFiles('host/go.mod') != ''
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "1.22.x"
+          cache: false
+
+      - name: Run Go race tests
+        if: hashFiles('host/go.mod') != ''
+        working-directory: host
+        shell: bash
+        env:
+          CGO_ENABLED: "1"
+        run: go test -race -v ./...

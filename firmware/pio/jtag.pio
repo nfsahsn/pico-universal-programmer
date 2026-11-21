@@ -1,0 +1,55 @@
+; Pico Universal — PIO0 IEEE 1149.1 4-Wire JTAG physical layer (7 instructions)
+;
+; Pin mapping:
+;   side-set pin 0 : PU_PIN_SWCLK_TCK (GP2 = TCK)
+;   out pins 0..1  : PU_PIN_SWDIO_TMS (GP3 = TMS), PU_PIN_JTAG_TDI (GP4 = TDI)
+;   in pin 0       : PU_PIN_JTAG_TDO  (GP5 = TDO)
+;   (On PU_BOARD_PRO_PCB, PU_PIN_SWDIO_DIR GP6 is driven HIGH in SIO so TMS drives target.)
+
+.program pu_jtag
+.side_set 1
+
+.wrap_target
+public get_cmd:
+    pull block                  side 0  ; [0] Fetch (bit_count - 1), hold TCK low
+    out x, 4                    side 0  ; [1] X = bit_count - 1 (0..15 -> 1..16 TCK clocks)
+    pull block                  side 0  ; [2] Fetch packed {TDI, TMS} bit pairs
+bit_loop:
+    out pins, 2             [1] side 0  ; [3] Drive TMS (GP3) & TDI (GP4) while TCK low (2 cycles)
+    in pins, 1              [1] side 1  ; [4] Sample settled TDO (GP5) & raise TCK high (2 cycles)
+    jmp x--, bit_loop           side 0  ; [5] Lower TCK and repeat
+    push block                  side 0  ; [6] Push captured TDO word to RX FIFO & wrap
+.wrap
+
+% c-sdk {
+#include "hardware/gpio.h"
+#include "config/board_pinout.h"
+
+static inline void pu_jtag_program_init(PIO pio, uint sm, uint offset, uint32_t clkdiv_q16_8) {
+    pio_sm_config c = pu_jtag_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, PU_PIN_SWCLK_TCK);
+    sm_config_set_out_pins(&c, PU_PIN_SWDIO_TMS, 2u);
+    sm_config_set_in_pins(&c, PU_PIN_JTAG_TDO);
+    sm_config_set_out_shift(&c, true, false, 32u);
+    sm_config_set_in_shift(&c, true, false, 32u);
+    c.clkdiv = (clkdiv_q16_8 << PIO_SM0_CLKDIV_FRAC_LSB);
+
+    pio_gpio_init(pio, PU_PIN_SWCLK_TCK);
+    pio_gpio_init(pio, PU_PIN_SWDIO_TMS);
+    pio_gpio_init(pio, PU_PIN_JTAG_TDI);
+    pio_gpio_init(pio, PU_PIN_JTAG_TDO);
+    gpio_pull_up(PU_PIN_JTAG_TDO);
+#if PU_HAS_LEVEL_SHIFTER
+    gpio_init(PU_PIN_SWDIO_DIR);
+    gpio_put(PU_PIN_SWDIO_DIR, true);
+    gpio_set_dir(PU_PIN_SWDIO_DIR, GPIO_OUT);
+#endif
+    pio_sm_set_pins_with_mask(pio, sm,
+                              (1u << PU_PIN_SWDIO_TMS) | (1u << PU_PIN_JTAG_TDI),
+                              (1u << PU_PIN_SWCLK_TCK) | (1u << PU_PIN_SWDIO_TMS) | (1u << PU_PIN_JTAG_TDI));
+    pio_sm_set_consecutive_pindirs(pio, sm, PU_PIN_SWCLK_TCK, 3u, true);
+    pio_sm_set_consecutive_pindirs(pio, sm, PU_PIN_JTAG_TDO, 1u, false);
+    pio_sm_init(pio, sm, offset + pu_jtag_offset_get_cmd, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

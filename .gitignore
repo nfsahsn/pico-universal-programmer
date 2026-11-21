@@ -17,6 +17,7 @@ CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
+!paper/Makefile
 
 # IDE / Editor files
 .vscode/

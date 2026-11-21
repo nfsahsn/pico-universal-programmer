@@ -1,0 +1,6 @@
+{
+  "e1_throughput": {},
+  "e2_debug_latency": {},
+  "e3_switching_uart": {},
+  "e5_fault_injection": {}
+}

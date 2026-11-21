@@ -1,0 +1,156 @@
+{
+  "board": {
+    "3dviewports": [],
+    "design_settings": {
+      "defaults": {
+        "board_outline_line_width": 0.1,
+        "copper_line_width": 0.2,
+        "copper_text_italic": false,
+        "copper_text_size_h": 1.0,
+        "copper_text_size_v": 1.0,
+        "copper_text_thickness": 0.15,
+        "silk_line_width": 0.12,
+        "silk_text_size_h": 0.8,
+        "silk_text_size_v": 0.8,
+        "silk_text_thickness": 0.15
+      },
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.15,
+          "via_gap": 0.25,
+          "width": 0.21
+        }
+      ],
+      "drc_exclusions": [],
+      "rules": {
+        "min_clearance": 0.127,
+        "min_copper_edge_clearance": 0.3,
+        "min_hole_clearance": 0.25,
+        "min_hole_to_hole": 0.25,
+        "min_microvia_diameter": 0.2,
+        "min_microvia_drill": 0.1,
+        "min_silk_clearance": 0.1,
+        "min_through_hole_diameter": 0.3,
+        "min_track_width": 0.127,
+        "min_via_annular_width": 0.125,
+        "min_via_diameter": 0.45,
+        "solder_mask_clearance": 0.05,
+        "solder_mask_min_width": 0.08
+      }
+    },
+    "layer_presets": [],
+    "viewports": []
+  },
+  "meta": {
+    "filename": "pico-universal-pro.kicad_pro",
+    "version": 1
+  },
+  "net_settings": {
+    "classes": [
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.21,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Default",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.2,
+        "via_diameter": 0.5,
+        "via_drill": 0.3
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.15,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.21,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "USB_90OHM_DIFF",
+        "pcb_color": "rgba(0, 128, 255, 1.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.21,
+        "via_diameter": 0.5,
+        "via_drill": 0.3
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.25,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "POWER",
+        "pcb_color": "rgba(220, 40, 40, 1.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.5,
+        "via_diameter": 0.6,
+        "via_drill": 0.3
+      }
+    ],
+    "meta": {
+      "version": 3
+    },
+    "net_colors": null,
+    "netclass_assignments": {
+      "+3V3": "POWER",
+      "+5V_USB": "POWER",
+      "GND": "POWER",
+      "USB_DM": "USB_90OHM_DIFF",
+      "USB_DP": "USB_90OHM_DIFF",
+      "VTARG_OUT": "POWER",
+      "VTREF": "POWER"
+    },
+    "netclass_patterns": []
+  },
+  "pcbnew": {
+    "last_paths": {
+      "gencad": "",
+      "idf": "",
+      "netlist": "",
+      "specctra_dsn": "",
+      "step": "",
+      "vrml": ""
+    },
+    "page_layout_descr_file": ""
+  },
+  "schematic": {
+    "drawing": {
+      "default_line_thickness": 6.0,
+      "default_text_size": 50.0,
+      "field_names": [],
+      "intersheets_ref_own_page": false,
+      "intersheets_ref_prefix": "",
+      "intersheets_ref_short": false,
+      "intersheets_ref_show": false,
+      "intersheets_ref_suffix": "",
+      "junction_size_choice": 3,
+      "label_size_ratio": 0.375,
+      "pin_symbol_size": 25.0,
+      "text_offset_ratio": 0.15
+    },
+    "meta": {
+      "version": 1
+    }
+  },
+  "sheets": [
+    [
+      "a0000000-0000-4000-8000-000000000001",
+      "Root"
+    ]
+  ],
+  "text_variables": {
+    "BOARD_PROFILE": "PU_BOARD_PRO_PCB",
+    "BOARD_REV": "RevA",
+    "STACKUP": "JLC04161H-7628",
+    "USB_VID": "0x2E8A"
+  }
+}

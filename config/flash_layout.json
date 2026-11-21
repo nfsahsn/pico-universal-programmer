@@ -1,0 +1,50 @@
+{
+  "flash_base": 268435456,
+  "flash_size": 2097152,
+  "page_size": 256,
+  "sector_size": 4096,
+  "partitions": [
+    {
+      "name": "bootloader",
+      "macro": "SLOT_BOOTLOADER",
+      "offset": 0,
+      "size": 61440,
+      "executable": true
+    },
+    {
+      "name": "journal_a",
+      "macro": "SLOT_JOURNAL_A",
+      "offset": 61440,
+      "size": 4096,
+      "executable": false
+    },
+    {
+      "name": "app_slot_a",
+      "macro": "SLOT_APP_A",
+      "offset": 65536,
+      "size": 983040,
+      "executable": true
+    },
+    {
+      "name": "app_slot_b",
+      "macro": "SLOT_APP_B",
+      "offset": 1048576,
+      "size": 983040,
+      "executable": true
+    },
+    {
+      "name": "journal_b",
+      "macro": "SLOT_JOURNAL_B",
+      "offset": 2031616,
+      "size": 4096,
+      "executable": false
+    },
+    {
+      "name": "factory_meta",
+      "macro": "SLOT_FACTORY_META",
+      "offset": 2093056,
+      "size": 4096,
+      "executable": false
+    }
+  ]
+}

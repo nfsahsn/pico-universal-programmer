@@ -1,0 +1,82 @@
+; Pico Universal — PIO1 WCH QingKe V2 1-Wire SWIO physical layer (22 instructions)
+;
+; Asynchronous pulse-width modulated 1-wire open-drain protocol on PU_PIN_SWIO
+; (GP28 on PU_BOARD_PICO; GP8 + GP9 switchable 1 kOhm PU on PU_BOARD_PRO_PCB):
+;   - Pin output latch is held at 0; side-set controls pindirs:
+;       side 1 -> pindir = 1 (open-drain pull LOW)
+;       side 0 -> pindir = 0 (release Hi-Z; 1 kOhm pull-up pulls HIGH)
+;   - Base time unit T = 2 PIO cycles (125 ns at 16 MHz PIO clock):
+;       Bit '1' TX : 3 cyc (1.5T) LOW, 6 cyc (3.0T) Hi-Z
+;       Bit '0' TX : 15 cyc (7.5T) LOW, 4 cyc (2.0T) Hi-Z
+;       Bit RX     : 3 cyc (1.5T) host start LOW, sample @ +4 cyc (3.5T),
+;                    +12 cyc (6.0T) Hi-Z recovery window
+;       Stop/Idle  : >= 50 cyc (25T > 18T) Hi-Z
+;
+; TX FIFO Word 0 (left-shifted OSR, pull_thresh = 32):
+;   bits [31:9] : mode (2 = Write 32-bit Word 1, 1 = Read 32-bit word to RX FIFO)
+;   bits [8:0]  : 9-bit header {start=1'b1, reg_addr[6:0], rw}
+
+.program pu_swio
+.side_set 1 pindirs
+
+.wrap_target
+public frame_start:
+    pull block                  side 0  ; [0]  Idle Hi-Z; fetch header word
+    out x, 23                   side 0  ; [1]  X = mode (2=write, 1=read); 9 hdr bits left
+tx_loop:
+    out y, 1                    side 1  ; [2]  Drive LOW (1 cyc), Y = next MSB
+    jmp !y, tx_zero         [1] side 1  ; [3]  Hold LOW +2 cyc -> 3 cyc (1.5T) for '1'
+    jmp !osre, tx_loop      [5] side 0  ; [4]  Bit '1': Hi-Z 6 cyc (3T), loop while !OSRE
+    jmp tx_done                 side 0  ; [5]  Final '1' bit completed
+tx_zero:
+    nop                    [11] side 1  ; [6]  Bit '0': hold LOW +12 cyc -> 15 cyc (7.5T)
+    jmp !osre, tx_loop      [3] side 0  ; [7]  Bit '0': Hi-Z 4 cyc (2T), loop while !OSRE
+tx_done:
+    jmp x--, next_phase         side 0  ; [8]  X==0 -> write payload complete
+    jmp stop_frame              side 0  ; [9]  Emit stop/idle high window
+next_phase:
+    jmp !x, rx_start            side 0  ; [10] Mode 1 (X: 1->0) -> read 32 bits
+    set x, 0                    side 0  ; [11] Mode 2 (X: 2->1) -> write 32 payload bits
+    pull block                  side 0  ; [12] Pull 32-bit write data word (OSRE=false)
+    jmp tx_loop                 side 0  ; [13] Transmit all 32 data bits
+rx_start:
+    set x, 31                   side 0  ; [14] Prepare 32-bit read counter
+rx_loop:
+    nop                     [2] side 1  ; [15] Host read trigger: drive LOW 3 cyc (1.5T)
+    nop                     [3] side 0  ; [16] Release Hi-Z 4 cyc (sample @ 3.5T)
+    in pins, 1             [11] side 0  ; [17] Sample SWIO MSB-first & wait 12 cyc (6T)
+    jmp x--, rx_loop            side 0  ; [18] Loop across 32 target bits
+    push block                  side 0  ; [19] Push 32-bit word into RX FIFO
+stop_frame:
+    set y, 2                    side 0  ; [20] Stop condition: hold Hi-Z >= 24T
+stop_wait:
+    jmp y--, stop_wait     [15] side 0  ; [21] 3 * 16 = 48 cyc Hi-Z, then wrap
+.wrap
+
+% c-sdk {
+#include "hardware/gpio.h"
+#include "config/board_pinout.h"
+
+static inline void pu_swio_program_init(PIO pio, uint sm, uint offset, uint32_t clkdiv_q16_8) {
+    pio_sm_config c = pu_swio_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, PU_PIN_SWIO);
+    sm_config_set_in_pins(&c, PU_PIN_SWIO);
+    sm_config_set_out_shift(&c, false, false, 32u);
+    sm_config_set_in_shift(&c, false, false, 32u);
+    c.clkdiv = (clkdiv_q16_8 << PIO_SM0_CLKDIV_FRAC_LSB);
+
+#if defined(PU_PIN_SWIO_PU_EN)
+    gpio_init(PU_PIN_SWIO_PU_EN);
+    gpio_put(PU_PIN_SWIO_PU_EN, true);
+    gpio_set_dir(PU_PIN_SWIO_PU_EN, GPIO_OUT);
+#endif
+
+    pio_gpio_init(pio, PU_PIN_SWIO);
+    gpio_pull_up(PU_PIN_SWIO);
+    /* Open-drain: output latch fixed at 0; side-set toggles pindirs between 0 (Hi-Z) and 1 (LOW). */
+    pio_sm_set_pins_with_mask(pio, sm, 0u, (1u << PU_PIN_SWIO));
+    pio_sm_set_consecutive_pindirs(pio, sm, PU_PIN_SWIO, 1u, false);
+    pio_sm_init(pio, sm, offset + pu_swio_offset_frame_start, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

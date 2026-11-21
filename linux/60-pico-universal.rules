@@ -1,0 +1,21 @@
+# Pico Universal USB Programmer & Debugger — Linux udev access & ModemManager rules
+#
+# Official Raspberry Pi Vendor ID: 0x2E8A.
+
+ACTION=="remove", GOTO="pico_universal_end"
+
+# Production builds inject the approved PU_USB_PID at configure/setup time;
+# replace <pu_usb_pid> (4 lowercase hex digits) or let `pu setup` render it:
+# SUBSYSTEM=="usb", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="<pu_usb_pid>", TAG+="uaccess", ENV{ID_MM_DEVICE_IGNORE}="1"
+# SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="<pu_usb_pid>", TAG+="uaccess", ENV{ID_MM_DEVICE_IGNORE}="1"
+
+# Pico Universal composite USB & CDC-ACM interfaces (VID 0x2E8A)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2e8a", ATTRS{product}=="Pico Universal*", TAG+="uaccess", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{product}=="Pico Universal*", TAG+="uaccess", ENV{ID_MM_DEVICE_IGNORE}="1"
+
+# Development CMSIS-DAP probe (000c) and RP2040 BOOTSEL recovery (0003) identities
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="000c", TAG+="uaccess", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="000c", TAG+="uaccess", ENV{ID_MM_DEVICE_IGNORE}="1"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2e8a", ATTRS{idProduct}=="0003", TAG+="uaccess", ENV{ID_MM_DEVICE_IGNORE}="1"
+
+LABEL="pico_universal_end"
