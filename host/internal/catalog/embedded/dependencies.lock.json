@@ -1,0 +1,1360 @@
+{
+  "schema_version": 1,
+  "catalog_sha256": "e4c870bc1435aeacc85b923cc98414b904d50a28e400896287fca730cfa9709a",
+  "indexes": [
+    {
+      "url": "https://downloads.arduino.cc/packages/package_index.json",
+      "filename": "package_index.json",
+      "sha256": "f8a5dd560af85b5122b5bd2fb011c83ab7c846a53db01bd6573ed1711e0cde4e",
+      "upstream_sha256": "3cb9691dc81453f0ad429c721af4aaf87ff18d9431408f4cd75c8bb479419c3e"
+    },
+    {
+      "url": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
+      "filename": "package_stmicroelectronics_index.json",
+      "sha256": "d8d1cdb356c31fad05a253a2d7f56069bace51ee93adf9b8b8bcc9654f817d48",
+      "upstream_sha256": "d8d1cdb356c31fad05a253a2d7f56069bace51ee93adf9b8b8bcc9654f817d48"
+    },
+    {
+      "url": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
+      "filename": "package_rp2040_index.json",
+      "sha256": "6003f99c08fce01eed53c59faa4d2a983884ba7a5bad1a3b4b47f98bf6cac488",
+      "upstream_sha256": "6003f99c08fce01eed53c59faa4d2a983884ba7a5bad1a3b4b47f98bf6cac488"
+    },
+    {
+      "url": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
+      "filename": "package_esp32_index.json",
+      "sha256": "d5f26e5ee0b06c8e2c66c2196aa16fdffdbbc317c832159795f2caa5405d0f7d",
+      "upstream_sha256": "d5f26e5ee0b06c8e2c66c2196aa16fdffdbbc317c832159795f2caa5405d0f7d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openwch/board_manager_files/main/package_ch32v_index.json",
+      "filename": "package_ch32v_index.json",
+      "sha256": "b2a8d3681ee91a279f8c6e9cdaf890ed88d9a9def7df5351f993d063c8251ccc",
+      "upstream_sha256": "b2a8d3681ee91a279f8c6e9cdaf890ed88d9a9def7df5351f993d063c8251ccc"
+    },
+    {
+      "url": "https://downloads.arduino.cc/libraries/library_index.json",
+      "filename": "library_index.json",
+      "sha256": "e46748d97eaf49d2eebf1fabd5eba0fa5088cbe62fb1b4ee640fd46ade9ed56d",
+      "upstream_sha256": "a4ba2b7a334ae0264d0683ea1413dff73b79f63a6606befd8b8d157c43f2017d"
+    }
+  ],
+  "cores": {
+    "stm32": {
+      "package": "STMicroelectronics:stm32",
+      "version": "2.12.0",
+      "index": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
+      "source": "https://github.com/stm32duino/Arduino_Core_STM32",
+      "artifact": "core/stm32",
+      "dependencies": [
+        [
+          "STMicroelectronics",
+          "xpack-arm-none-eabi-gcc",
+          "14.2.1-1.1"
+        ],
+        [
+          "STMicroelectronics",
+          "xpack-openocd",
+          "0.12.0-6"
+        ],
+        [
+          "STMicroelectronics",
+          "STM32Tools",
+          "2.4.0"
+        ],
+        [
+          "STMicroelectronics",
+          "CMSIS",
+          "6.2.0"
+        ],
+        [
+          "STMicroelectronics",
+          "CMSIS_DSP",
+          "1.16.2"
+        ],
+        [
+          "STMicroelectronics",
+          "CMSIS_NN",
+          "7.0.0"
+        ],
+        [
+          "STMicroelectronics",
+          "STM32_SVD",
+          "1.20.0"
+        ]
+      ]
+    },
+    "rp2040": {
+      "package": "rp2040:rp2040",
+      "version": "6.1.1",
+      "index": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
+      "source": "https://github.com/earlephilhower/arduino-pico",
+      "artifact": "core/rp2040",
+      "dependencies": [
+        [
+          "rp2040",
+          "pqt-gcc",
+          "5.0.0-9576866"
+        ],
+        [
+          "rp2040",
+          "pqt-gcc-riscv",
+          "5.0.0-9576866"
+        ],
+        [
+          "rp2040",
+          "pqt-mklittlefs",
+          "5.0.0-9576866"
+        ],
+        [
+          "rp2040",
+          "pqt-pioasm",
+          "5.0.0-9576866"
+        ],
+        [
+          "rp2040",
+          "pqt-python3",
+          "1.0.1-base-3a57aed-1"
+        ],
+        [
+          "rp2040",
+          "pqt-openocd",
+          "5.0.0-9576866"
+        ],
+        [
+          "rp2040",
+          "pqt-picotool",
+          "5.0.0-9576866"
+        ]
+      ]
+    },
+    "esp32": {
+      "package": "esp32:esp32",
+      "version": "3.3.11",
+      "index": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
+      "source": "https://github.com/espressif/arduino-esp32",
+      "artifact": "core/esp32",
+      "dependencies": [
+        [
+          "esp32",
+          "esp-x32",
+          "2601"
+        ],
+        [
+          "esp32",
+          "xtensa-esp-elf-gdb",
+          "17.1_20260402"
+        ],
+        [
+          "esp32",
+          "esp-rv32",
+          "2601"
+        ],
+        [
+          "esp32",
+          "riscv32-esp-elf-gdb",
+          "17.1_20260402"
+        ],
+        [
+          "esp32",
+          "openocd-esp32",
+          "v0.12.0-esp32-20260424"
+        ],
+        [
+          "esp32",
+          "esptool_py",
+          "5.3.1"
+        ],
+        [
+          "esp32",
+          "mkspiffs",
+          "0.2.3"
+        ],
+        [
+          "esp32",
+          "mklittlefs",
+          "4.0.2-db0513a"
+        ],
+        [
+          "arduino",
+          "dfu-util",
+          "0.11.0-arduino5"
+        ],
+        [
+          "esp32",
+          "esp32-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32c3-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32c5-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32c6-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32h2-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32p4-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32p4_es-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32s2-libs",
+          "3.3.11"
+        ],
+        [
+          "esp32",
+          "esp32s3-libs",
+          "3.3.11"
+        ]
+      ]
+    },
+    "ch32v": {
+      "package": "WCH:ch32v",
+      "version": "1.0.4",
+      "index": "https://raw.githubusercontent.com/openwch/board_manager_files/main/package_ch32v_index.json",
+      "source": "https://github.com/openwch/arduino_core_ch32",
+      "artifact": "core/ch32v",
+      "dependencies": [
+        [
+          "WCH",
+          "riscv-none-embed-gcc",
+          "8.2.0"
+        ],
+        [
+          "WCH",
+          "openocd",
+          "1.0.0"
+        ],
+        [
+          "WCH",
+          "beforeinstall",
+          "1.0.0"
+        ]
+      ]
+    }
+  },
+  "ide_cores": {
+    "ide-avr": {
+      "package": "arduino:avr",
+      "version": "1.8.8",
+      "index": "https://downloads.arduino.cc/packages/package_index.json",
+      "purpose": "Stock Arduino IDE first-start dependency; not a supported programmer target",
+      "artifact": "core/ide-avr",
+      "dependencies": [
+        [
+          "arduino",
+          "arduinoOTA",
+          "1.3.0"
+        ],
+        [
+          "arduino",
+          "avr-gcc",
+          "7.3.0-atmel3.6.1-arduino7"
+        ],
+        [
+          "arduino",
+          "avrdude",
+          "8.0.0-arduino1"
+        ]
+      ]
+    }
+  },
+  "libraries": {
+    "Arduino_BuiltIn": {
+      "version": "1.0.0",
+      "artifact": "library/Arduino_BuiltIn"
+    },
+    "Ethernet": {
+      "version": "2.0.2",
+      "artifact": "library/Ethernet"
+    },
+    "Firmata": {
+      "version": "2.5.9",
+      "artifact": "library/Firmata"
+    },
+    "Keyboard": {
+      "version": "1.0.7",
+      "artifact": "library/Keyboard"
+    },
+    "LiquidCrystal": {
+      "version": "1.0.7",
+      "artifact": "library/LiquidCrystal"
+    },
+    "Mouse": {
+      "version": "1.0.1",
+      "artifact": "library/Mouse"
+    },
+    "SD": {
+      "version": "1.3.0",
+      "artifact": "library/SD"
+    },
+    "Servo": {
+      "version": "1.3.0",
+      "artifact": "library/Servo"
+    },
+    "Stepper": {
+      "version": "1.1.3",
+      "artifact": "library/Stepper"
+    },
+    "TFT": {
+      "version": "1.0.6",
+      "artifact": "library/TFT"
+    }
+  },
+  "tools": [
+    {
+      "packager": "STMicroelectronics",
+      "name": "CMSIS",
+      "version": "6.2.0",
+      "artifacts": {
+        "linux-x86_64": "tool/STMicroelectronics/CMSIS/6.2.0/linux-x86_64",
+        "windows-x86_64": "tool/STMicroelectronics/CMSIS/6.2.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "STMicroelectronics",
+      "name": "CMSIS_DSP",
+      "version": "1.16.2",
+      "artifacts": {
+        "linux-x86_64": "tool/STMicroelectronics/CMSIS_DSP/1.16.2/linux-x86_64",
+        "windows-x86_64": "tool/STMicroelectronics/CMSIS_DSP/1.16.2/windows-x86_64"
+      }
+    },
+    {
+      "packager": "STMicroelectronics",
+      "name": "CMSIS_NN",
+      "version": "7.0.0",
+      "artifacts": {
+        "linux-x86_64": "tool/STMicroelectronics/CMSIS_NN/7.0.0/linux-x86_64",
+        "windows-x86_64": "tool/STMicroelectronics/CMSIS_NN/7.0.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "STMicroelectronics",
+      "name": "STM32Tools",
+      "version": "2.4.0",
+      "artifacts": {
+        "linux-x86_64": "tool/STMicroelectronics/STM32Tools/2.4.0/linux-x86_64",
+        "windows-x86_64": "tool/STMicroelectronics/STM32Tools/2.4.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "STMicroelectronics",
+      "name": "STM32_SVD",
+      "version": "1.20.0",
+      "artifacts": {
+        "linux-x86_64": "tool/STMicroelectronics/STM32_SVD/1.20.0/linux-x86_64",
+        "windows-x86_64": "tool/STMicroelectronics/STM32_SVD/1.20.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "STMicroelectronics",
+      "name": "xpack-arm-none-eabi-gcc",
+      "version": "14.2.1-1.1",
+      "artifacts": {
+        "linux-x86_64": "tool/STMicroelectronics/xpack-arm-none-eabi-gcc/14.2.1-1.1/linux-x86_64",
+        "windows-x86_64": "tool/STMicroelectronics/xpack-arm-none-eabi-gcc/14.2.1-1.1/windows-x86_64"
+      }
+    },
+    {
+      "packager": "STMicroelectronics",
+      "name": "xpack-openocd",
+      "version": "0.12.0-6",
+      "artifacts": {
+        "linux-x86_64": "tool/STMicroelectronics/xpack-openocd/0.12.0-6/linux-x86_64",
+        "windows-x86_64": "tool/STMicroelectronics/xpack-openocd/0.12.0-6/windows-x86_64"
+      }
+    },
+    {
+      "packager": "WCH",
+      "name": "beforeinstall",
+      "version": "1.0.0",
+      "artifacts": {
+        "linux-x86_64": "tool/WCH/beforeinstall/1.0.0/linux-x86_64",
+        "windows-x86_64": "tool/WCH/beforeinstall/1.0.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "WCH",
+      "name": "openocd",
+      "version": "1.0.0",
+      "artifacts": {
+        "linux-x86_64": "tool/WCH/openocd/1.0.0/linux-x86_64",
+        "windows-x86_64": "tool/WCH/openocd/1.0.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "WCH",
+      "name": "riscv-none-embed-gcc",
+      "version": "8.2.0",
+      "artifacts": {
+        "linux-x86_64": "tool/WCH/riscv-none-embed-gcc/8.2.0/linux-x86_64",
+        "windows-x86_64": "tool/WCH/riscv-none-embed-gcc/8.2.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "arduino",
+      "name": "arduinoOTA",
+      "version": "1.3.0",
+      "artifacts": {
+        "linux-x86_64": "tool/arduino/arduinoOTA/1.3.0/linux-x86_64",
+        "windows-x86_64": "tool/arduino/arduinoOTA/1.3.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "arduino",
+      "name": "avr-gcc",
+      "version": "7.3.0-atmel3.6.1-arduino7",
+      "artifacts": {
+        "linux-x86_64": "tool/arduino/avr-gcc/7.3.0-atmel3.6.1-arduino7/linux-x86_64",
+        "windows-x86_64": "tool/arduino/avr-gcc/7.3.0-atmel3.6.1-arduino7/windows-x86_64"
+      }
+    },
+    {
+      "packager": "arduino",
+      "name": "avrdude",
+      "version": "8.0.0-arduino1",
+      "artifacts": {
+        "linux-x86_64": "tool/arduino/avrdude/8.0.0-arduino1/linux-x86_64",
+        "windows-x86_64": "tool/arduino/avrdude/8.0.0-arduino1/windows-x86_64"
+      }
+    },
+    {
+      "packager": "arduino",
+      "name": "dfu-util",
+      "version": "0.11.0-arduino5",
+      "artifacts": {
+        "linux-x86_64": "tool/arduino/dfu-util/0.11.0-arduino5/linux-x86_64",
+        "windows-x86_64": "tool/arduino/dfu-util/0.11.0-arduino5/windows-x86_64"
+      }
+    },
+    {
+      "packager": "builtin",
+      "name": "ctags",
+      "version": "5.8-arduino11",
+      "artifacts": {
+        "linux-x86_64": "tool/builtin/ctags/5.8-arduino11/linux-x86_64",
+        "windows-x86_64": "tool/builtin/ctags/5.8-arduino11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "builtin",
+      "name": "dfu-discovery",
+      "version": "0.1.2",
+      "artifacts": {
+        "linux-x86_64": "tool/builtin/dfu-discovery/0.1.2/linux-x86_64",
+        "windows-x86_64": "tool/builtin/dfu-discovery/0.1.2/windows-x86_64"
+      }
+    },
+    {
+      "packager": "builtin",
+      "name": "mdns-discovery",
+      "version": "1.1.0",
+      "artifacts": {
+        "linux-x86_64": "tool/builtin/mdns-discovery/1.1.0/linux-x86_64",
+        "windows-x86_64": "tool/builtin/mdns-discovery/1.1.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "builtin",
+      "name": "serial-discovery",
+      "version": "1.5.2",
+      "artifacts": {
+        "linux-x86_64": "tool/builtin/serial-discovery/1.5.2/linux-x86_64",
+        "windows-x86_64": "tool/builtin/serial-discovery/1.5.2/windows-x86_64"
+      }
+    },
+    {
+      "packager": "builtin",
+      "name": "serial-monitor",
+      "version": "0.15.0",
+      "artifacts": {
+        "linux-x86_64": "tool/builtin/serial-monitor/0.15.0/linux-x86_64",
+        "windows-x86_64": "tool/builtin/serial-monitor/0.15.0/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp-rv32",
+      "version": "2601",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp-rv32/2601/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp-rv32/2601/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp-x32",
+      "version": "2601",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp-x32/2601/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp-x32/2601/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32c3-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32c3-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32c3-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32c5-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32c5-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32c5-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32c6-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32c6-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32c6-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32h2-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32h2-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32h2-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32p4-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32p4-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32p4-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32p4_es-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32p4_es-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32p4_es-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32s2-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32s2-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32s2-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esp32s3-libs",
+      "version": "3.3.11",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esp32s3-libs/3.3.11/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esp32s3-libs/3.3.11/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "esptool_py",
+      "version": "5.3.1",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/esptool_py/5.3.1/linux-x86_64",
+        "windows-x86_64": "tool/esp32/esptool_py/5.3.1/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "mklittlefs",
+      "version": "4.0.2-db0513a",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/mklittlefs/4.0.2-db0513a/linux-x86_64",
+        "windows-x86_64": "tool/esp32/mklittlefs/4.0.2-db0513a/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "mkspiffs",
+      "version": "0.2.3",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/mkspiffs/0.2.3/linux-x86_64",
+        "windows-x86_64": "tool/esp32/mkspiffs/0.2.3/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "openocd-esp32",
+      "version": "v0.12.0-esp32-20260424",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/openocd-esp32/v0.12.0-esp32-20260424/linux-x86_64",
+        "windows-x86_64": "tool/esp32/openocd-esp32/v0.12.0-esp32-20260424/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "riscv32-esp-elf-gdb",
+      "version": "17.1_20260402",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/riscv32-esp-elf-gdb/17.1_20260402/linux-x86_64",
+        "windows-x86_64": "tool/esp32/riscv32-esp-elf-gdb/17.1_20260402/windows-x86_64"
+      }
+    },
+    {
+      "packager": "esp32",
+      "name": "xtensa-esp-elf-gdb",
+      "version": "17.1_20260402",
+      "artifacts": {
+        "linux-x86_64": "tool/esp32/xtensa-esp-elf-gdb/17.1_20260402/linux-x86_64",
+        "windows-x86_64": "tool/esp32/xtensa-esp-elf-gdb/17.1_20260402/windows-x86_64"
+      }
+    },
+    {
+      "packager": "rp2040",
+      "name": "pqt-gcc",
+      "version": "5.0.0-9576866",
+      "artifacts": {
+        "linux-x86_64": "tool/rp2040/pqt-gcc/5.0.0-9576866/linux-x86_64",
+        "windows-x86_64": "tool/rp2040/pqt-gcc/5.0.0-9576866/windows-x86_64"
+      }
+    },
+    {
+      "packager": "rp2040",
+      "name": "pqt-gcc-riscv",
+      "version": "5.0.0-9576866",
+      "artifacts": {
+        "linux-x86_64": "tool/rp2040/pqt-gcc-riscv/5.0.0-9576866/linux-x86_64",
+        "windows-x86_64": "tool/rp2040/pqt-gcc-riscv/5.0.0-9576866/windows-x86_64"
+      }
+    },
+    {
+      "packager": "rp2040",
+      "name": "pqt-mklittlefs",
+      "version": "5.0.0-9576866",
+      "artifacts": {
+        "linux-x86_64": "tool/rp2040/pqt-mklittlefs/5.0.0-9576866/linux-x86_64",
+        "windows-x86_64": "tool/rp2040/pqt-mklittlefs/5.0.0-9576866/windows-x86_64"
+      }
+    },
+    {
+      "packager": "rp2040",
+      "name": "pqt-openocd",
+      "version": "5.0.0-9576866",
+      "artifacts": {
+        "linux-x86_64": "tool/rp2040/pqt-openocd/5.0.0-9576866/linux-x86_64",
+        "windows-x86_64": "tool/rp2040/pqt-openocd/5.0.0-9576866/windows-x86_64"
+      }
+    },
+    {
+      "packager": "rp2040",
+      "name": "pqt-picotool",
+      "version": "5.0.0-9576866",
+      "artifacts": {
+        "linux-x86_64": "tool/rp2040/pqt-picotool/5.0.0-9576866/linux-x86_64",
+        "windows-x86_64": "tool/rp2040/pqt-picotool/5.0.0-9576866/windows-x86_64"
+      }
+    },
+    {
+      "packager": "rp2040",
+      "name": "pqt-pioasm",
+      "version": "5.0.0-9576866",
+      "artifacts": {
+        "linux-x86_64": "tool/rp2040/pqt-pioasm/5.0.0-9576866/linux-x86_64",
+        "windows-x86_64": "tool/rp2040/pqt-pioasm/5.0.0-9576866/windows-x86_64"
+      }
+    },
+    {
+      "packager": "rp2040",
+      "name": "pqt-python3",
+      "version": "1.0.1-base-3a57aed-1",
+      "artifacts": {
+        "linux-x86_64": "tool/rp2040/pqt-python3/1.0.1-base-3a57aed-1/linux-x86_64",
+        "windows-x86_64": "tool/rp2040/pqt-python3/1.0.1-base-3a57aed-1/windows-x86_64"
+      }
+    }
+  ],
+  "releases": {
+    "arduino-cli": {
+      "version": "1.5.1",
+      "artifacts": {
+        "linux-x86_64": "arduino-cli/linux-x86_64",
+        "windows-x86_64": "arduino-cli/windows-x86_64"
+      }
+    },
+    "arduino-ide": {
+      "version": "2.3.10",
+      "artifacts": {
+        "linux-x86_64": "arduino-ide/linux-x86_64",
+        "windows-x86_64": "arduino-ide/windows-x86_64"
+      }
+    }
+  },
+  "artifacts": {
+    "core/stm32": {
+      "url": "https://github.com/stm32duino/Arduino_Core_STM32/releases/download/2.12.0/STM32-2.12.0.tar.bz2",
+      "filename": "STM32-2.12.0.tar.bz2",
+      "sha256": "8d1ff26959c4cef55996f25b8403b029234264dc962793cff832e9ddc27e7544",
+      "size": 55110080
+    },
+    "core/rp2040": {
+      "url": "https://github.com/earlephilhower/arduino-pico/releases/download/6.1.1/rp2040-6.1.1.zip",
+      "filename": "rp2040-6.1.1.zip",
+      "sha256": "aba58aa05cd632a8b236581168dd057b3638276ff327d2a660095c23e1f46993",
+      "size": 133161862
+    },
+    "core/esp32": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32-core-3.3.11.zip",
+      "filename": "esp32-core-3.3.11.zip",
+      "sha256": "a18203f2429f5551ec929b80e8129e439df7a3a009b536b305f00b4a1f1bbb62",
+      "size": 46900611
+    },
+    "core/ch32v": {
+      "url": "https://codeload.github.com/openwch/arduino_core_ch32/zip/refs/tags/1.0.4",
+      "filename": "arduino_core_ch32-1.0.4.zip",
+      "sha256": "8f4e975f763183791aaac5e537584dfd13dd044bd5dc05d09b0e2c7deccd14c5",
+      "size": 980095
+    },
+    "core/ide-avr": {
+      "url": "https://downloads.arduino.cc/cores/staging/avr-1.8.8.tar.bz2",
+      "filename": "avr-1.8.8.tar.bz2",
+      "sha256": "a234c2a43dcd01ce54be665806f183b8e6ec4e966d2e3e0c3358b63023d6390c",
+      "size": 7162150
+    },
+    "library/Arduino_BuiltIn": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/Arduino_BuiltIn-1.0.0.zip",
+      "filename": "Arduino_BuiltIn-1.0.0.zip",
+      "sha256": "b727cd1fa0ddd1b2177646d0f512c32ebbff1e14466a5ac4ad653f899c587f74",
+      "size": 4691
+    },
+    "library/Ethernet": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/Ethernet-2.0.2.zip",
+      "filename": "Ethernet-2.0.2.zip",
+      "sha256": "e8688e417039c79d547d005f4deecbdaffde965823cfa79f64a18d67df1112d6",
+      "size": 104551
+    },
+    "library/Firmata": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/firmata/Firmata-2.5.9.zip",
+      "filename": "Firmata-2.5.9.zip",
+      "sha256": "281060ac597fd329fa700b60f6871385b1d8756802f0c83e3ba2516c3fef886b",
+      "size": 454744
+    },
+    "library/Keyboard": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/Keyboard-1.0.7.zip",
+      "filename": "Keyboard-1.0.7.zip",
+      "sha256": "66a599d1469e1f27def13521ca8b67edd71e7039c94773c28c60143ba3ae0f64",
+      "size": 30385
+    },
+    "library/LiquidCrystal": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/LiquidCrystal-1.0.7.zip",
+      "filename": "LiquidCrystal-1.0.7.zip",
+      "sha256": "f7b14c42afbbdcfbe66073e6ef1e4cbaa03f5d11f52f9ab91c916b6ccac38434",
+      "size": 19947
+    },
+    "library/Mouse": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/Mouse-1.0.1.zip",
+      "filename": "Mouse-1.0.1.zip",
+      "sha256": "feb363a5431d06535612403344740330988452bdca41609d8f19d4811f25d976",
+      "size": 4291
+    },
+    "library/SD": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/SD-1.3.0.zip",
+      "filename": "SD-1.3.0.zip",
+      "sha256": "94b030f2ef4b55658e8505dc3043946878e6dc7644cbdcbf2b51bdea8bebff32",
+      "size": 82919
+    },
+    "library/Servo": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/Servo-1.3.0.zip",
+      "filename": "Servo-1.3.0.zip",
+      "sha256": "d25b0d77f10a810d24876c570410f32cc3129f9cc3d0370c861a278b969b4b38",
+      "size": 133580
+    },
+    "library/Stepper": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/Stepper-1.1.3.zip",
+      "filename": "Stepper-1.1.3.zip",
+      "sha256": "85e91305a7c2a853ce9201d8261f150241be8c840d05a9adaff78412dcf66f7e",
+      "size": 10600
+    },
+    "library/TFT": {
+      "url": "https://downloads.arduino.cc/libraries/github.com/arduino-libraries/TFT-1.0.6.zip",
+      "filename": "TFT-1.0.6.zip",
+      "sha256": "00a4a29e43e06e5c22fe2294936784a69c94d13475d8624fa2239a1a6c6aa72b",
+      "size": 50189
+    },
+    "tool/STMicroelectronics/CMSIS/6.2.0/linux-x86_64": {
+      "url": "https://github.com/stm32duino/ArduinoModule-CMSIS/releases/download/6.2.0/CMSIS-6.2.0.tar.bz2",
+      "filename": "CMSIS-6.2.0.tar.bz2",
+      "sha256": "e9dcf458a333cda8d4332bb3a4058e8c3de1626c4a567250c60151b590a1d8ce",
+      "size": 232576
+    },
+    "tool/STMicroelectronics/CMSIS/6.2.0/windows-x86_64": {
+      "url": "https://github.com/stm32duino/ArduinoModule-CMSIS/releases/download/6.2.0/CMSIS-6.2.0.tar.bz2",
+      "filename": "CMSIS-6.2.0.tar.bz2",
+      "sha256": "e9dcf458a333cda8d4332bb3a4058e8c3de1626c4a567250c60151b590a1d8ce",
+      "size": 232576
+    },
+    "tool/STMicroelectronics/CMSIS_DSP/1.16.2/linux-x86_64": {
+      "url": "https://github.com/stm32duino/ArduinoModule-CMSIS/releases/download/6.2.0/CMSIS_DSP-1.16.2.tar.bz2",
+      "filename": "CMSIS_DSP-1.16.2.tar.bz2",
+      "sha256": "04f48ceed53eeecb1b37b9b8d06f6ff1ee1cf62073195e0cee312b824446c14c",
+      "size": 1525843
+    },
+    "tool/STMicroelectronics/CMSIS_DSP/1.16.2/windows-x86_64": {
+      "url": "https://github.com/stm32duino/ArduinoModule-CMSIS/releases/download/6.2.0/CMSIS_DSP-1.16.2.tar.bz2",
+      "filename": "CMSIS_DSP-1.16.2.tar.bz2",
+      "sha256": "04f48ceed53eeecb1b37b9b8d06f6ff1ee1cf62073195e0cee312b824446c14c",
+      "size": 1525843
+    },
+    "tool/STMicroelectronics/CMSIS_NN/7.0.0/linux-x86_64": {
+      "url": "https://github.com/stm32duino/ArduinoModule-CMSIS/releases/download/6.2.0/CMSIS_NN-7.0.0.tar.bz2",
+      "filename": "CMSIS_NN-7.0.0.tar.bz2",
+      "sha256": "a99361b0f0352e1ca45610b451f06e24acd63643c88a2d2139caa4b6588493ec",
+      "size": 99943
+    },
+    "tool/STMicroelectronics/CMSIS_NN/7.0.0/windows-x86_64": {
+      "url": "https://github.com/stm32duino/ArduinoModule-CMSIS/releases/download/6.2.0/CMSIS_NN-7.0.0.tar.bz2",
+      "filename": "CMSIS_NN-7.0.0.tar.bz2",
+      "sha256": "a99361b0f0352e1ca45610b451f06e24acd63643c88a2d2139caa4b6588493ec",
+      "size": 99943
+    },
+    "tool/STMicroelectronics/STM32Tools/2.4.0/linux-x86_64": {
+      "url": "https://github.com/stm32duino/Arduino_Tools/releases/download/2.4.0/STM32Tools-2.4.0-linux.tar.bz2",
+      "filename": "STM32Tools-2.4.0-linux.tar.bz2",
+      "sha256": "774944ca27a8f57a23d418c716af6ce3707545b5e121996f958c3856f6325d83",
+      "size": 203281
+    },
+    "tool/STMicroelectronics/STM32Tools/2.4.0/windows-x86_64": {
+      "url": "https://github.com/stm32duino/Arduino_Tools/releases/download/2.4.0/STM32Tools-2.4.0-windows.tar.bz2",
+      "filename": "STM32Tools-2.4.0-windows.tar.bz2",
+      "sha256": "cb418380693f5b5774fb237f679d83cfb5fecf5dc66065b2424381794c84696d",
+      "size": 2439820
+    },
+    "tool/STMicroelectronics/STM32_SVD/1.20.0/linux-x86_64": {
+      "url": "https://github.com/stm32duino/stm32_svd/releases/download/1.20.0/STM32_SVD-1.20.0.tar.bz2",
+      "filename": "STM32_SVD-1.20.0.tar.bz2",
+      "sha256": "453e4e5f699f246d3e9d712d85dd5acfa38663efcc0a9ec00e7b07455a6057d6",
+      "size": 14564369
+    },
+    "tool/STMicroelectronics/STM32_SVD/1.20.0/windows-x86_64": {
+      "url": "https://github.com/stm32duino/stm32_svd/releases/download/1.20.0/STM32_SVD-1.20.0.tar.bz2",
+      "filename": "STM32_SVD-1.20.0.tar.bz2",
+      "sha256": "453e4e5f699f246d3e9d712d85dd5acfa38663efcc0a9ec00e7b07455a6057d6",
+      "size": 14564369
+    },
+    "tool/STMicroelectronics/xpack-arm-none-eabi-gcc/14.2.1-1.1/linux-x86_64": {
+      "url": "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v14.2.1-1.1/xpack-arm-none-eabi-gcc-14.2.1-1.1-linux-x64.tar.gz",
+      "filename": "xpack-arm-none-eabi-gcc-14.2.1-1.1-linux-x64.tar.gz",
+      "sha256": "ed8c7d207a85d00da22b90cf80ab3b0b2c7600509afadf6b7149644e9d4790a6",
+      "size": 283880244
+    },
+    "tool/STMicroelectronics/xpack-arm-none-eabi-gcc/14.2.1-1.1/windows-x86_64": {
+      "url": "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v14.2.1-1.1/xpack-arm-none-eabi-gcc-14.2.1-1.1-win32-x64.zip",
+      "filename": "xpack-arm-none-eabi-gcc-14.2.1-1.1-win32-x64.zip",
+      "sha256": "0b2d496b383ba578182eb57b3f7d35ff510e36eda56257883b902fa07c3bba55",
+      "size": 323368593
+    },
+    "tool/STMicroelectronics/xpack-openocd/0.12.0-6/linux-x86_64": {
+      "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-6/xpack-openocd-0.12.0-6-linux-x64.tar.gz",
+      "filename": "xpack-openocd-0.12.0-6-linux-x64.tar.gz",
+      "sha256": "7e762af5f9a4f21ac03130ddce36acf996f3e67c4ee1526ed3d4f8ad89e65c77",
+      "size": 2662017
+    },
+    "tool/STMicroelectronics/xpack-openocd/0.12.0-6/windows-x86_64": {
+      "url": "https://github.com/xpack-dev-tools/openocd-xpack/releases/download/v0.12.0-6/xpack-openocd-0.12.0-6-win32-x64.zip",
+      "filename": "xpack-openocd-0.12.0-6-win32-x64.zip",
+      "sha256": "c57724f87219bafde78f61b54fb7f303f456fed9826a3d0ee2d54d461ad58020",
+      "size": 3090548
+    },
+    "tool/WCH/beforeinstall/1.0.0/linux-x86_64": {
+      "url": "https://codeload.github.com/TianpeiLee/wch_beforeinstall_linux/tar.gz/refs/tags/1.0.0",
+      "filename": "wch_beforeinstall_linux-1.0.0.tar.gz",
+      "sha256": "17ef3a94bc46b9eb9ab1fdecc48fcd3880eeb8fcc36e6648626320f0bf2864dc",
+      "size": 507269
+    },
+    "tool/WCH/beforeinstall/1.0.0/windows-x86_64": {
+      "url": "https://codeload.github.com/TianpeiLee/wch_beforeinstall_linux/tar.gz/refs/tags/1.0.0",
+      "filename": "wch_beforeinstall_linux-1.0.0.tar.gz",
+      "sha256": "17ef3a94bc46b9eb9ab1fdecc48fcd3880eeb8fcc36e6648626320f0bf2864dc",
+      "size": 507269
+    },
+    "tool/WCH/openocd/1.0.0/linux-x86_64": {
+      "url": "https://codeload.github.com/TianpeiLee/wch_openocd_linux/tar.gz/refs/tags/1.0.0",
+      "filename": "wch_openocd_linux-1.0.0.tar.gz",
+      "sha256": "10fa9cf5006c3495aedcafd1c3903fa8d75d513536432e1d61b59124442eb4c3",
+      "size": 2097609
+    },
+    "tool/WCH/openocd/1.0.0/windows-x86_64": {
+      "url": "https://codeload.github.com/openwch/openocd_wch/zip/refs/tags/1.0.0",
+      "filename": "openocd_wch-1.0.0.zip",
+      "sha256": "f1e54fd7f253cf37e7f4581088ff62dfdfdab899b9d3182c36426f6146ae0465",
+      "size": 9604774
+    },
+    "tool/WCH/riscv-none-embed-gcc/8.2.0/linux-x86_64": {
+      "url": "https://codeload.github.com/TianpeiLee/wch_gcc_8_linux/tar.gz/refs/tags/8.2.0",
+      "filename": "wch_gcc_8_linux-8.2.0.tar.gz",
+      "sha256": "967fb021e5689ff79a06a71c7e54fb7face418d5e9b27ec64f5e56687557a282",
+      "size": 245443061
+    },
+    "tool/WCH/riscv-none-embed-gcc/8.2.0/windows-x86_64": {
+      "url": "https://codeload.github.com/openwch/risc-none-embed-gcc/zip/refs/tags/8.2.0",
+      "filename": "risc-none-embed-gcc-8.2.0.zip",
+      "sha256": "43df880a1908c873a8b6ab115568c6beaeec41ddadeb5202703b6aa9fde50626",
+      "size": 267710516
+    },
+    "tool/arduino/arduinoOTA/1.3.0/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/arduinoOTA-1.3.0-linux_amd64.tar.bz2",
+      "filename": "arduinoOTA-1.3.0-linux_amd64.tar.bz2",
+      "sha256": "aa45ee2441ffc3a122daec5802941d1fa2ac47adf5c5c481b5e0daa4dc259ffa",
+      "size": 2716248
+    },
+    "tool/arduino/arduinoOTA/1.3.0/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/arduinoOTA-1.3.0-windows_386.zip",
+      "filename": "arduinoOTA-1.3.0-windows_386.zip",
+      "sha256": "051943844eee442460d2c709edefadca184287fffd2b6c100dd53aa742aa05f6",
+      "size": 2768948
+    },
+    "tool/arduino/avr-gcc/7.3.0-atmel3.6.1-arduino7/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/avr-gcc-7.3.0-atmel3.6.1-arduino7-x86_64-pc-linux-gnu.tar.bz2",
+      "filename": "avr-gcc-7.3.0-atmel3.6.1-arduino7-x86_64-pc-linux-gnu.tar.bz2",
+      "sha256": "bd8c37f6952a2130ac9ee32c53f6a660feb79bee8353c8e289eb60fdcefed91e",
+      "size": 37630618
+    },
+    "tool/arduino/avr-gcc/7.3.0-atmel3.6.1-arduino7/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/avr-gcc-7.3.0-atmel3.6.1-arduino7-i686-w64-mingw32.zip",
+      "filename": "avr-gcc-7.3.0-atmel3.6.1-arduino7-i686-w64-mingw32.zip",
+      "sha256": "a54f64755fff4cb792a1495e5defdd789902a2a3503982e81b898299cf39800e",
+      "size": 52519412
+    },
+    "tool/arduino/avrdude/8.0.0-arduino1/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_Linux_64bit.tar.gz",
+      "filename": "avrdude_8.0-arduino.1_Linux_64bit.tar.gz",
+      "sha256": "1d2edadb07e070fcd016e8c802e961e30bfa606c2db63625c930526e7044aaa6",
+      "size": 1476932
+    },
+    "tool/arduino/avrdude/8.0.0-arduino1/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/avrdude_8.0-arduino.1_Windows_32bit.tar.gz",
+      "filename": "avrdude_8.0-arduino.1_Windows_32bit.tar.gz",
+      "sha256": "833aa1a66a8e70cd597fcfdbd7e559a91a00eca1d7aa3be2ce9bcadf7ccb987c",
+      "size": 1890359
+    },
+    "tool/arduino/dfu-util/0.11.0-arduino5/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/dfu-util-0.11-arduino5-linux_amd64.tar.gz",
+      "filename": "dfu-util-0.11-arduino5-linux_amd64.tar.gz",
+      "sha256": "96c64c278561af806b585c123c85748926ad02b1aedc07e5578ca9bee2be0d2a",
+      "size": 2283425
+    },
+    "tool/arduino/dfu-util/0.11.0-arduino5/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/dfu-util-0.11-arduino5-windows_386.tar.gz",
+      "filename": "dfu-util-0.11-arduino5-windows_386.tar.gz",
+      "sha256": "6451e16bf77600fe2436c8708ab4b75077c49997cf8bedf03221d9d6726bb641",
+      "size": 571340
+    },
+    "tool/builtin/ctags/5.8-arduino11/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/ctags-5.8-arduino11-pm-x86_64-pc-linux-gnu.tar.bz2",
+      "filename": "ctags-5.8-arduino11-pm-x86_64-pc-linux-gnu.tar.bz2",
+      "sha256": "62b514f3aaf37b5429ef703853bb46365fb91b4754c1916d085bf134004886e3",
+      "size": 111604
+    },
+    "tool/builtin/ctags/5.8-arduino11/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/tools/ctags-5.8-arduino11-pm-i686-mingw32.zip",
+      "filename": "ctags-5.8-arduino11-pm-i686-mingw32.zip",
+      "sha256": "106c9f074a3e2ec55bd8a461c1522bb4c90488275f061c3d51942862c99b8ba7",
+      "size": 116455
+    },
+    "tool/builtin/dfu-discovery/0.1.2/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/discovery/dfu-discovery/dfu-discovery_v0.1.2_Linux_64bit.tar.gz",
+      "filename": "dfu-discovery_v0.1.2_Linux_64bit.tar.gz",
+      "sha256": "d82649741fd6cbe369d7fe22d290efd7e28e4d6fd0b81b7b1eabff43b495b5f8",
+      "size": 1731768
+    },
+    "tool/builtin/dfu-discovery/0.1.2/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/discovery/dfu-discovery/dfu-discovery_v0.1.2_Windows_64bit.zip",
+      "filename": "dfu-discovery_v0.1.2_Windows_64bit.zip",
+      "sha256": "5ef334c4d566b0033c229c28b2b401bc98bad70d5c25e3027c038aa3cde0d10f",
+      "size": 2282491
+    },
+    "tool/builtin/mdns-discovery/1.1.0/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/discovery/mdns-discovery/mdns-discovery_v1.1.0_Linux_64bit.tar.gz",
+      "filename": "mdns-discovery_v1.1.0_Linux_64bit.tar.gz",
+      "sha256": "6966f406e5b6e80d82a388706d6d9d8a63d46035d19d1e6b4fb1ebeaf7fea056",
+      "size": 3220729
+    },
+    "tool/builtin/mdns-discovery/1.1.0/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/discovery/mdns-discovery/mdns-discovery_v1.1.0_Windows_64bit.zip",
+      "filename": "mdns-discovery_v1.1.0_Windows_64bit.zip",
+      "sha256": "20a96d21dbc711710a23bc36ec86f906df172f66b0f8d23d9e4f72ebea44a24d",
+      "size": 3322320
+    },
+    "tool/builtin/serial-discovery/1.5.2/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/discovery/serial-discovery/serial-discovery_v1.5.2_Linux_64bit.tar.gz",
+      "filename": "serial-discovery_v1.5.2_Linux_64bit.tar.gz",
+      "sha256": "7a95d7386c66c0846fe4aa96b601e72783ae64f541eb2f5edb4fc9e69a04b6d3",
+      "size": 2163207
+    },
+    "tool/builtin/serial-discovery/1.5.2/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/discovery/serial-discovery/serial-discovery_v1.5.2_Windows_64bit.zip",
+      "filename": "serial-discovery_v1.5.2_Windows_64bit.zip",
+      "sha256": "53173e898c3bb1b548e1dd6fae663771c9d0b68c91eee9ea8b75f395048c0511",
+      "size": 2302288
+    },
+    "tool/builtin/serial-monitor/0.15.0/linux-x86_64": {
+      "url": "https://downloads.arduino.cc/monitor/serial-monitor/serial-monitor_v0.15.0_Linux_64bit.tar.gz",
+      "filename": "serial-monitor_v0.15.0_Linux_64bit.tar.gz",
+      "sha256": "f1bc9680f2cff08688bc4ccbaf5e9be4ce38aa3f10d40a487a7704c04006f19b",
+      "size": 2446183
+    },
+    "tool/builtin/serial-monitor/0.15.0/windows-x86_64": {
+      "url": "https://downloads.arduino.cc/monitor/serial-monitor/serial-monitor_v0.15.0_Windows_64bit.zip",
+      "filename": "serial-monitor_v0.15.0_Windows_64bit.zip",
+      "sha256": "005202ade1bcc5fd4b3c721a4b865f8608eef4d58518a82d43c67abfc52cdf4f",
+      "size": 2564561
+    },
+    "tool/esp32/esp-rv32/2601/linux-x86_64": {
+      "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20260121/riscv32-esp-elf-14.2.0_20260121-x86_64-linux-gnu.tar.gz",
+      "filename": "riscv32-esp-elf-14.2.0_20260121-x86_64-linux-gnu.tar.gz",
+      "sha256": "1b79617f43cf0e25b92646359d1623d8bef135050aca44586df59b6a64496d82",
+      "size": 590607738
+    },
+    "tool/esp32/esp-rv32/2601/windows-x86_64": {
+      "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20260121/riscv32-esp-elf-14.2.0_20260121-x86_64-w64-mingw32.zip",
+      "filename": "riscv32-esp-elf-14.2.0_20260121-x86_64-w64-mingw32.zip",
+      "sha256": "c2734714e59f684b74d1cb278f75b4ae9ec546aa1e55d73786ef039410e4a8f7",
+      "size": 705866147
+    },
+    "tool/esp32/esp-x32/2601/linux-x86_64": {
+      "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20260121/xtensa-esp-elf-14.2.0_20260121-x86_64-linux-gnu.tar.gz",
+      "filename": "xtensa-esp-elf-14.2.0_20260121-x86_64-linux-gnu.tar.gz",
+      "sha256": "4e090a6cbf1ff7769684d9a248c9b8bdbe4c0ada098adda54b4c67a91449afa7",
+      "size": 334265784
+    },
+    "tool/esp32/esp-x32/2601/windows-x86_64": {
+      "url": "https://github.com/espressif/crosstool-NG/releases/download/esp-14.2.0_20260121/xtensa-esp-elf-14.2.0_20260121-x86_64-w64-mingw32.zip",
+      "filename": "xtensa-esp-elf-14.2.0_20260121-x86_64-w64-mingw32.zip",
+      "sha256": "82cbe0353c2e7c96acc8755c854aaa2d93d346c6a378fc692e60b3912c560108",
+      "size": 413859845
+    },
+    "tool/esp32/esp32-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32-libs-3.3.11.zip",
+      "filename": "esp32-libs-3.3.11.zip",
+      "sha256": "f7d70b98d83482ef9065f13e9dbe21f8c1292f0dc6e6ee9f1970b3b2e5ea894f",
+      "size": 47525987
+    },
+    "tool/esp32/esp32-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32-libs-3.3.11.zip",
+      "filename": "esp32-libs-3.3.11.zip",
+      "sha256": "f7d70b98d83482ef9065f13e9dbe21f8c1292f0dc6e6ee9f1970b3b2e5ea894f",
+      "size": 47525987
+    },
+    "tool/esp32/esp32c3-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32c3-libs-3.3.11.zip",
+      "filename": "esp32c3-libs-3.3.11.zip",
+      "sha256": "887067748467a002d9354dc2a14cfd233528e6d89a0b5178db90ba4224e17e5d",
+      "size": 59969586
+    },
+    "tool/esp32/esp32c3-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32c3-libs-3.3.11.zip",
+      "filename": "esp32c3-libs-3.3.11.zip",
+      "sha256": "887067748467a002d9354dc2a14cfd233528e6d89a0b5178db90ba4224e17e5d",
+      "size": 59969586
+    },
+    "tool/esp32/esp32c5-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32c5-libs-3.3.11.zip",
+      "filename": "esp32c5-libs-3.3.11.zip",
+      "sha256": "9760dcb7a92306ce169025c74afae104a65c4221f6b1d92c69369748b9cb91f6",
+      "size": 70195267
+    },
+    "tool/esp32/esp32c5-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32c5-libs-3.3.11.zip",
+      "filename": "esp32c5-libs-3.3.11.zip",
+      "sha256": "9760dcb7a92306ce169025c74afae104a65c4221f6b1d92c69369748b9cb91f6",
+      "size": 70195267
+    },
+    "tool/esp32/esp32c6-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32c6-libs-3.3.11.zip",
+      "filename": "esp32c6-libs-3.3.11.zip",
+      "sha256": "dd7374dabadeced8259ea67c331faa7588afbbed92c2727e7b8c5201f6762ee0",
+      "size": 68692102
+    },
+    "tool/esp32/esp32c6-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32c6-libs-3.3.11.zip",
+      "filename": "esp32c6-libs-3.3.11.zip",
+      "sha256": "dd7374dabadeced8259ea67c331faa7588afbbed92c2727e7b8c5201f6762ee0",
+      "size": 68692102
+    },
+    "tool/esp32/esp32h2-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32h2-libs-3.3.11.zip",
+      "filename": "esp32h2-libs-3.3.11.zip",
+      "sha256": "8a73008ee70bc5a9255798e7732208a533f7d931fa54a2289e5f2c7eed822126",
+      "size": 64559520
+    },
+    "tool/esp32/esp32h2-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32h2-libs-3.3.11.zip",
+      "filename": "esp32h2-libs-3.3.11.zip",
+      "sha256": "8a73008ee70bc5a9255798e7732208a533f7d931fa54a2289e5f2c7eed822126",
+      "size": 64559520
+    },
+    "tool/esp32/esp32p4-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32p4-libs-3.3.11.zip",
+      "filename": "esp32p4-libs-3.3.11.zip",
+      "sha256": "315868de4dc8cd78fb1b77e07355c605a296abd40ac9d51e78d2b8bd1c61f737",
+      "size": 70114877
+    },
+    "tool/esp32/esp32p4-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32p4-libs-3.3.11.zip",
+      "filename": "esp32p4-libs-3.3.11.zip",
+      "sha256": "315868de4dc8cd78fb1b77e07355c605a296abd40ac9d51e78d2b8bd1c61f737",
+      "size": 70114877
+    },
+    "tool/esp32/esp32p4_es-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32p4_es-libs-3.3.11.zip",
+      "filename": "esp32p4_es-libs-3.3.11.zip",
+      "sha256": "e286516acfc346b9a465d9f11cfa2686ab3c38a88446f3e5f9de7d903eaeb3cd",
+      "size": 69687616
+    },
+    "tool/esp32/esp32p4_es-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32p4_es-libs-3.3.11.zip",
+      "filename": "esp32p4_es-libs-3.3.11.zip",
+      "sha256": "e286516acfc346b9a465d9f11cfa2686ab3c38a88446f3e5f9de7d903eaeb3cd",
+      "size": 69687616
+    },
+    "tool/esp32/esp32s2-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32s2-libs-3.3.11.zip",
+      "filename": "esp32s2-libs-3.3.11.zip",
+      "sha256": "584a2fa2d6e8d9de35233b506bdb60d1492b0fb6de8fa4e7560eb2a3b04aa74a",
+      "size": 45421252
+    },
+    "tool/esp32/esp32s2-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32s2-libs-3.3.11.zip",
+      "filename": "esp32s2-libs-3.3.11.zip",
+      "sha256": "584a2fa2d6e8d9de35233b506bdb60d1492b0fb6de8fa4e7560eb2a3b04aa74a",
+      "size": 45421252
+    },
+    "tool/esp32/esp32s3-libs/3.3.11/linux-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32s3-libs-3.3.11.zip",
+      "filename": "esp32s3-libs-3.3.11.zip",
+      "sha256": "fec76794708694120c6ec803cdbfc7dcd36286ea22b7d38097b7909bbd19f7b5",
+      "size": 70074478
+    },
+    "tool/esp32/esp32s3-libs/3.3.11/windows-x86_64": {
+      "url": "https://github.com/espressif/arduino-esp32/releases/download/3.3.11/esp32s3-libs-3.3.11.zip",
+      "filename": "esp32s3-libs-3.3.11.zip",
+      "sha256": "fec76794708694120c6ec803cdbfc7dcd36286ea22b7d38097b7909bbd19f7b5",
+      "size": 70074478
+    },
+    "tool/esp32/esptool_py/5.3.1/linux-x86_64": {
+      "url": "https://github.com/espressif/esptool/releases/download/v5.3.1/esptool-v5.3.1-linux-amd64.tar.gz",
+      "filename": "esptool-v5.3.1-linux-amd64.tar.gz",
+      "sha256": "e9cc641f8e4a0b644b52836d7a6b59f3c6d3261213c5ccc41f8f3c3035d06aa4",
+      "size": 83577947
+    },
+    "tool/esp32/esptool_py/5.3.1/windows-x86_64": {
+      "url": "https://github.com/espressif/esptool/releases/download/v5.3.1/esptool-v5.3.1-windows-amd64.zip",
+      "filename": "esptool-v5.3.1-windows-amd64.zip",
+      "sha256": "2b4a73c45db27426685896f64ce3e557f63a64f43cc100cb65c0cc3486af96d3",
+      "size": 63962426
+    },
+    "tool/esp32/mklittlefs/4.0.2-db0513a/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/mklittlefs/releases/download/4.0.2/x86_64-linux-gnu-mklittlefs-db0513a.tar.gz",
+      "filename": "x86_64-linux-gnu-mklittlefs-db0513a.tar.gz",
+      "sha256": "7a70428b7089bf1c9d481b0e070e99cd8a430d37e197b7d3db64f24ba8891508",
+      "size": 54000
+    },
+    "tool/esp32/mklittlefs/4.0.2-db0513a/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/mklittlefs/releases/download/4.0.2/x86_64-w64-mingw32-mklittlefs-db0513a.zip",
+      "filename": "x86_64-w64-mingw32-mklittlefs-db0513a.zip",
+      "sha256": "e99dbfcf2b808a2020254764f06e336aa6a4d253ab09bcabe01399fcd95d9ab8",
+      "size": 452707
+    },
+    "tool/esp32/mkspiffs/0.2.3/linux-x86_64": {
+      "url": "https://github.com/igrr/mkspiffs/releases/download/0.2.3/mkspiffs-0.2.3-arduino-esp32-linux64.tar.gz",
+      "filename": "mkspiffs-0.2.3-arduino-esp32-linux64.tar.gz",
+      "sha256": "5e1a4ff41385e842f389f6b5254102a547e566a06b49babeffa93ef37115cb5d",
+      "size": 50646
+    },
+    "tool/esp32/mkspiffs/0.2.3/windows-x86_64": {
+      "url": "https://github.com/igrr/mkspiffs/releases/download/0.2.3/mkspiffs-0.2.3-arduino-esp32-win32.zip",
+      "filename": "mkspiffs-0.2.3-arduino-esp32-win32.zip",
+      "sha256": "b647f2c2efe6949819c85ea9404271b55c7c9c25bcb98d3b98a1d0ba771adf56",
+      "size": 249809
+    },
+    "tool/esp32/openocd-esp32/v0.12.0-esp32-20260424/linux-x86_64": {
+      "url": "https://github.com/espressif/openocd-esp32/releases/download/v0.12.0-esp32-20260424/openocd-esp32-linux-amd64-0.12.0-esp32-20260424.tar.gz",
+      "filename": "openocd-esp32-linux-amd64-0.12.0-esp32-20260424.tar.gz",
+      "sha256": "0c875beb0e8d89cee4335968e8a27c7d151f05b91f636263c81ab01e098d390d",
+      "size": 2630575
+    },
+    "tool/esp32/openocd-esp32/v0.12.0-esp32-20260424/windows-x86_64": {
+      "url": "https://github.com/espressif/openocd-esp32/releases/download/v0.12.0-esp32-20260424/openocd-esp32-win64-0.12.0-esp32-20260424.zip",
+      "filename": "openocd-esp32-win64-0.12.0-esp32-20260424.zip",
+      "sha256": "d0005eea5b916df047afca7b777792050f8c6a6a502407180c8d839e9a841f75",
+      "size": 3203098
+    },
+    "tool/esp32/riscv32-esp-elf-gdb/17.1_20260402/linux-x86_64": {
+      "url": "https://github.com/espressif/binutils-gdb/releases/download/esp-gdb-v17.1_20260402/riscv32-esp-elf-gdb-17.1_20260402-x86_64-linux-gnu.tar.gz",
+      "filename": "riscv32-esp-elf-gdb-17.1_20260402-x86_64-linux-gnu.tar.gz",
+      "sha256": "35f3db841338cb4f9bc60d757bc3e87dfa50ff50607bcbc3867c5b1ac28dd342",
+      "size": 43045928
+    },
+    "tool/esp32/riscv32-esp-elf-gdb/17.1_20260402/windows-x86_64": {
+      "url": "https://github.com/espressif/binutils-gdb/releases/download/esp-gdb-v17.1_20260402/riscv32-esp-elf-gdb-17.1_20260402-x86_64-w64-mingw32.zip",
+      "filename": "riscv32-esp-elf-gdb-17.1_20260402-x86_64-w64-mingw32.zip",
+      "sha256": "f9e56a0d17414a30f7c457f7804173ecfb078b90d94a7b9f6318dc9652575d3f",
+      "size": 45474783
+    },
+    "tool/esp32/xtensa-esp-elf-gdb/17.1_20260402/linux-x86_64": {
+      "url": "https://github.com/espressif/binutils-gdb/releases/download/esp-gdb-v17.1_20260402/xtensa-esp-elf-gdb-17.1_20260402-x86_64-linux-gnu.tar.gz",
+      "filename": "xtensa-esp-elf-gdb-17.1_20260402-x86_64-linux-gnu.tar.gz",
+      "sha256": "73bc6c4e50b06dceb60e94b53aded61b7769be3cf563572269d9c8d643db8e95",
+      "size": 42655871
+    },
+    "tool/esp32/xtensa-esp-elf-gdb/17.1_20260402/windows-x86_64": {
+      "url": "https://github.com/espressif/binutils-gdb/releases/download/esp-gdb-v17.1_20260402/xtensa-esp-elf-gdb-17.1_20260402-x86_64-w64-mingw32.zip",
+      "filename": "xtensa-esp-elf-gdb-17.1_20260402-x86_64-w64-mingw32.zip",
+      "sha256": "7525ae46b39fc87568717d8f0cc3dfbcdb77b96435dd80acfce6918b0abc2b8a",
+      "size": 44820924
+    },
+    "tool/rp2040/pqt-gcc/5.0.0-9576866/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-linux-gnu.arm-none-eabi-78c24be.260719.tar.gz",
+      "filename": "x86_64-linux-gnu.arm-none-eabi-78c24be.260719.tar.gz",
+      "sha256": "c61d50abd186f5e222fb6003ac1c3d657f4716a408d2efe4316020709714ff68",
+      "size": 118008659
+    },
+    "tool/rp2040/pqt-gcc/5.0.0-9576866/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-w64-mingw32.arm-none-eabi-78c24be.260719.zip",
+      "filename": "x86_64-w64-mingw32.arm-none-eabi-78c24be.260719.zip",
+      "sha256": "ecdc402f54d92cb44cd5d3b0dee89d51922e799d7fa5ead90fc74cabd95ed9ad",
+      "size": 130142209
+    },
+    "tool/rp2040/pqt-gcc-riscv/5.0.0-9576866/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-linux-gnu.riscv32-unknown-elf-78c24be.260719.tar.gz",
+      "filename": "x86_64-linux-gnu.riscv32-unknown-elf-78c24be.260719.tar.gz",
+      "sha256": "efa35f24e7e86909a760b2508165a1886014dbb2bb752b7d19b212cd0941e735",
+      "size": 192441830
+    },
+    "tool/rp2040/pqt-gcc-riscv/5.0.0-9576866/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-w64-mingw32.riscv32-unknown-elf-78c24be.260719.zip",
+      "filename": "x86_64-w64-mingw32.riscv32-unknown-elf-78c24be.260719.zip",
+      "sha256": "e5887af28dc9f88d4ef7344ec5a6212f7d3924db6d2dd063257c5d03e7b64c1f",
+      "size": 199931139
+    },
+    "tool/rp2040/pqt-mklittlefs/5.0.0-9576866/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-linux-gnu.mklittlefs-db0513a.260719.tar.gz",
+      "filename": "x86_64-linux-gnu.mklittlefs-db0513a.260719.tar.gz",
+      "sha256": "21efb8d2668a21081110701fe559a873cecff70f049eb4cef5ba8b1b87ee2642",
+      "size": 690378
+    },
+    "tool/rp2040/pqt-mklittlefs/5.0.0-9576866/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-w64-mingw32.mklittlefs-db0513a.260719.zip",
+      "filename": "x86_64-w64-mingw32.mklittlefs-db0513a.260719.zip",
+      "sha256": "2e1e2eb83492b145fc011af0a76a6bf81c9aa2480ea126d93bb7f151d53bb8fb",
+      "size": 1328420
+    },
+    "tool/rp2040/pqt-openocd/5.0.0-9576866/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-linux-gnu.openocd-acff23ffd.260719.tar.gz",
+      "filename": "x86_64-linux-gnu.openocd-acff23ffd.260719.tar.gz",
+      "sha256": "8a749afce5722ef3807e465f3844f27cd9c8ba3f514ed00efad11e81c1cf13b6",
+      "size": 7556836
+    },
+    "tool/rp2040/pqt-openocd/5.0.0-9576866/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-w64-mingw32.openocd-acff23ffd.260719.zip",
+      "filename": "x86_64-w64-mingw32.openocd-acff23ffd.260719.zip",
+      "sha256": "02ca5cda7070c001e9973578c79b370e6279f52fa8b0aed08af7a623a693a5b7",
+      "size": 2541781
+    },
+    "tool/rp2040/pqt-picotool/5.0.0-9576866/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-linux-gnu.picotool-6f6458d.260719.tar.gz",
+      "filename": "x86_64-linux-gnu.picotool-6f6458d.260719.tar.gz",
+      "sha256": "06d25f7b203b382a5d79da3f6d4cb202aeef482edededbe86981c61b123437f4",
+      "size": 999138
+    },
+    "tool/rp2040/pqt-picotool/5.0.0-9576866/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-w64-mingw32.picotool-6f6458d.260719.zip",
+      "filename": "x86_64-w64-mingw32.picotool-6f6458d.260719.zip",
+      "sha256": "c5d8f1b4ea345b67464402561b5b5ea36bc62962f051bc4d5245c0ca888126cd",
+      "size": 1270393
+    },
+    "tool/rp2040/pqt-pioasm/5.0.0-9576866/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-linux-gnu.pioasm-98a542c1.260719.tar.gz",
+      "filename": "x86_64-linux-gnu.pioasm-98a542c1.260719.tar.gz",
+      "sha256": "98faaffe3efdaa8f2133463cee49b06033e41dcff5c75e547615873e20257b8c",
+      "size": 650377
+    },
+    "tool/rp2040/pqt-pioasm/5.0.0-9576866/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/5.0.0/x86_64-w64-mingw32.pioasm-98a542c1.260719.zip",
+      "filename": "x86_64-w64-mingw32.pioasm-98a542c1.260719.zip",
+      "sha256": "dee88d690ade2ba462aeb759f9435162f355e588d944bca0ab0a2a593e84837f",
+      "size": 930002
+    },
+    "tool/rp2040/pqt-python3/1.0.1-base-3a57aed-1/linux-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/1.0.1-base/python3-via-env.tar.gz",
+      "filename": "python3-via-env.tar.gz",
+      "sha256": "c9237bfe0f62842d7187a39495baa4a7e3ab8b87c0b433614294b023cf0bc0f3",
+      "size": 292
+    },
+    "tool/rp2040/pqt-python3/1.0.1-base-3a57aed-1/windows-x86_64": {
+      "url": "https://github.com/earlephilhower/pico-quick-toolchain/releases/download/1.0.1-base/python3-3.7.2.post1-embed-win32v2a.zip",
+      "filename": "python3-3.7.2.post1-embed-win32v2a.zip",
+      "sha256": "f57cb2daf86176d2929e7c58990c2ac32554e3219d454dcac10e464ddda35bf2",
+      "size": 6428926
+    },
+    "arduino-cli/linux-x86_64": {
+      "url": "https://github.com/arduino/arduino-cli/releases/download/v1.5.1/arduino-cli_1.5.1_Linux_64bit.tar.gz",
+      "filename": "arduino-cli_1.5.1_Linux_64bit.tar.gz",
+      "sha256": "28a8e119c498a25607821c36cb2dc49e8463941b261a0d99091baa7bc692dd2b",
+      "size": 17630765
+    },
+    "arduino-cli/windows-x86_64": {
+      "url": "https://github.com/arduino/arduino-cli/releases/download/v1.5.1/arduino-cli_1.5.1_Windows_64bit.zip",
+      "filename": "arduino-cli_1.5.1_Windows_64bit.zip",
+      "sha256": "fabe42e0eb04d00e776a66178299ff95a46c623dbc260f997e58fd514853dd40",
+      "size": 17965819
+    },
+    "arduino-ide/linux-x86_64": {
+      "url": "https://github.com/arduino/arduino-ide/releases/download/2.3.10/arduino-ide_2.3.10_Linux_64bit.zip",
+      "filename": "arduino-ide_2.3.10_Linux_64bit.zip",
+      "sha256": "cc8a0b01e763d4646b670ce70c1bc8c389a0fa14ab556dcc0749c03f475a7975",
+      "size": 201276182
+    },
+    "arduino-ide/windows-x86_64": {
+      "url": "https://github.com/arduino/arduino-ide/releases/download/2.3.10/arduino-ide_2.3.10_Windows_64bit.zip",
+      "filename": "arduino-ide_2.3.10_Windows_64bit.zip",
+      "sha256": "5dd9d6b2e2c9ef8dd9d98da7808f712daff97911a91d3ccfaf946355c6b6abb3",
+      "size": 205653862
+    }
+  }
+}

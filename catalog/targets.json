@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "cores": {
+    "stm32": {
+      "package": "STMicroelectronics:stm32",
+      "version": "2.12.0",
+      "index": "https://github.com/stm32duino/BoardManagerFiles/raw/main/package_stmicroelectronics_index.json",
+      "source": "https://github.com/stm32duino/Arduino_Core_STM32"
+    },
+    "rp2040": {
+      "package": "rp2040:rp2040",
+      "version": "6.1.1",
+      "index": "https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json",
+      "source": "https://github.com/earlephilhower/arduino-pico"
+    },
+    "esp32": {
+      "package": "esp32:esp32",
+      "version": "3.3.11",
+      "index": "https://espressif.github.io/arduino-esp32/package_esp32_index.json",
+      "source": "https://github.com/espressif/arduino-esp32"
+    },
+    "ch32v": {
+      "package": "WCH:ch32v",
+      "version": "1.0.4",
+      "index": "https://raw.githubusercontent.com/openwch/board_manager_files/main/package_ch32v_index.json",
+      "source": "https://github.com/openwch/arduino_core_ch32"
+    }
+  },
+  "profiles": {
+    "stm32f1": {
+      "engine": "openocd",
+      "mode": "cmsis-dap",
+      "transport": "swd",
+      "target": "target/stm32f1x.cfg",
+      "tool_family": "stm32",
+      "speed_khz": 100
+    },
+    "stm32f4": {
+      "engine": "openocd",
+      "mode": "cmsis-dap",
+      "transport": "swd",
+      "target": "target/stm32f4x.cfg",
+      "tool_family": "stm32",
+      "speed_khz": 100
+    },
+    "rp2040": {
+      "engine": "openocd",
+      "mode": "cmsis-dap",
+      "transport": "swd",
+      "target": "target/rp2040.cfg",
+      "tool_family": "rp2040",
+      "speed_khz": 100
+    },
+    "rp2350": {
+      "engine": "openocd",
+      "mode": "cmsis-dap",
+      "transport": "swd",
+      "target": "target/rp2350.cfg",
+      "tool_family": "rp2040",
+      "speed_khz": 100
+    },
+    "esp32": {
+      "engine": "esp32",
+      "mode": "cmsis-dap",
+      "transport": "jtag",
+      "target": "target/esp32.cfg",
+      "openocd_cfg": "catalog/openocd/pu-esp32.cfg",
+      "tool_family": "esp32",
+      "speed_khz": 5000
+    },
+    "esp32s3": {
+      "engine": "esp32",
+      "mode": "cmsis-dap",
+      "transport": "jtag",
+      "target": "target/esp32s3.cfg",
+      "tool_family": "esp32",
+      "speed_khz": 100
+    },
+    "ch32v003": {
+      "engine": "picorvd",
+      "mode": "composite-swio",
+      "transport": "swio",
+      "tool_family": "riscv-gdb"
+    }
+  },
+  "boards": [
+    {
+      "id": "bluepill-f103c8",
+      "name": "Blue Pill STM32F103C8",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:GenF1:pnum=BLUEPILL_F103C8",
+      "profile": "stm32f1",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "bluepill-f103cb",
+      "name": "Blue Pill STM32F103CB",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:GenF1:pnum=BLUEPILL_F103CB",
+      "profile": "stm32f1",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "blackpill-f401cc",
+      "name": "Black Pill STM32F401CC",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:GenF4:pnum=BLACKPILL_F401CC",
+      "profile": "stm32f4",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "blackpill-f411ce",
+      "name": "Black Pill STM32F411CE",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:GenF4:pnum=BLACKPILL_F411CE",
+      "profile": "stm32f4",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "devebox-f407ve",
+      "name": "DevEBox STM32F407VE",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:GenF4:pnum=GENERIC_F407VETX",
+      "profile": "stm32f4",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "devebox-f407vg",
+      "name": "DevEBox STM32F407VG",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:GenF4:pnum=GENERIC_F407VGTX",
+      "profile": "stm32f4",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "nucleo-f401re",
+      "name": "Nucleo-F401RE",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F401RE",
+      "profile": "stm32f4",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "nucleo-f411re",
+      "name": "Nucleo-F411RE",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F411RE",
+      "profile": "stm32f4",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "nucleo-f446re",
+      "name": "Nucleo-F446RE",
+      "core": "stm32",
+      "fqbn": "STMicroelectronics:stm32:Nucleo_64:pnum=NUCLEO_F446RE",
+      "profile": "stm32f4",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "rpipico",
+      "name": "Raspberry Pi Pico",
+      "core": "rp2040",
+      "fqbn": "rp2040:rp2040:rpipico",
+      "profile": "rp2040",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "rpipicow",
+      "name": "Raspberry Pi Pico W",
+      "core": "rp2040",
+      "fqbn": "rp2040:rp2040:rpipicow",
+      "profile": "rp2040",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "rpipico2",
+      "name": "Raspberry Pi Pico 2",
+      "core": "rp2040",
+      "fqbn": "rp2040:rp2040:rpipico2",
+      "profile": "rp2350",
+      "phase": "expansion",
+      "hardware_qualified": false
+    },
+    {
+      "id": "rpipico2w",
+      "name": "Raspberry Pi Pico 2 W",
+      "core": "rp2040",
+      "fqbn": "rp2040:rp2040:rpipico2w",
+      "profile": "rp2350",
+      "phase": "expansion",
+      "hardware_qualified": false
+    },
+    {
+      "id": "esp32-wroom",
+      "name": "ESP32-WROOM-32 DevKit / NodeMCU-32S",
+      "core": "esp32",
+      "fqbn": "esp32:esp32:esp32",
+      "profile": "esp32",
+      "phase": "initial",
+      "hardware_qualified": false
+    },
+    {
+      "id": "esp32-s3",
+      "name": "ESP32-S3-DevKitC-1",
+      "core": "esp32",
+      "fqbn": "esp32:esp32:esp32s3",
+      "profile": "esp32s3",
+      "phase": "expansion",
+      "hardware_qualified": false
+    },
+    {
+      "id": "ch32v003f4",
+      "name": "CH32V003F4P6 development board",
+      "core": "ch32v",
+      "fqbn": "WCH:ch32v:CH32V00x_EVT:pnum=CH32V003F4",
+      "profile": "ch32v003",
+      "phase": "initial",
+      "hardware_qualified": false
+    }
+  ],
+  "ide_dependencies": {
+    "core": {
+      "package": "arduino:avr",
+      "version": "1.8.8",
+      "index": "https://downloads.arduino.cc/packages/package_index.json",
+      "purpose": "Stock Arduino IDE first-start dependency; not a supported programmer target"
+    },
+    "libraries": {
+      "Arduino_BuiltIn": "1.0.0",
+      "Ethernet": "2.0.2",
+      "Firmata": "2.5.9",
+      "Keyboard": "1.0.7",
+      "LiquidCrystal": "1.0.7",
+      "Mouse": "1.0.1",
+      "SD": "1.3.0",
+      "Servo": "1.3.0",
+      "Stepper": "1.1.3",
+      "TFT": "1.0.6"
+    }
+  }
+}

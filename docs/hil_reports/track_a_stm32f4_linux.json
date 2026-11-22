@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "mode": "execute-hil",
+  "timestamp_utc": "2026-11-21T20:21:42.176831+00:00",
+  "host": {
+    "os": "Linux",
+    "release": "7.1.12-200.fc44.x86_64",
+    "arch": "x86_64",
+    "python": "3.14.7"
+  },
+  "artifacts": {
+    "firmware_uf2": "build-pico/pico_universal_PICO_slotA.uf2",
+    "firmware_uf2_sha256": "9fd54518a3cd872b5a43a8f0151f0104fd71799cffecb96237c367f40f063b13",
+    "pu_binary": "build/pu",
+    "pu_binary_sha256": "1233100cc21a22f224239526b1f35d9b9998f3d95734d20e8d218917d9710fc0"
+  },
+  "probe": {
+    "detected_count": 1,
+    "serial": "5303284719046E9C",
+    "vid": 11914,
+    "pid": 4176,
+    "product": "Pico Universal CMSIS-DAP",
+    "error": ""
+  },
+  "families": [
+    {
+      "family": "stm32f4",
+      "board": "STM32F407VET6 (512 KiB Flash, 0x2BA01477/0x413)",
+      "transport": "CMSIS-DAP v2 SWD",
+      "preflight_check_ok": true,
+      "preflight_verdict": "OK",
+      "vtref_mv": 0,
+      "itarg_ma": 0,
+      "upload_cycles_requested": 100,
+      "upload_cycles_passed": 100,
+      "upload_pass_rate": 1.0,
+      "upload_mean_ms": 1426.698,
+      "upload_last_error": "",
+      "post_upload_check_ok": true,
+      "gdb_smoke_ok": true,
+      "gdb_smoke_note": "passed",
+      "passed": true
+    }
+  ],
+  "cross_family_switch": {
+    "sequence": [
+      "stm32f4"
+    ],
+    "steps": [
+      {
+        "family": "stm32f4",
+        "ok": true,
+        "elapsed_ms": 155.603
+      }
+    ],
+    "passed": true
+  },
+  "summary": {
+    "families_tested": 1,
+    "families_passed": 1,
+    "overall_passed": true
+  }
+}

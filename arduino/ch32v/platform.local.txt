@@ -4,6 +4,6 @@
 
 tools.picorvd_tool.path={runtime.tools.riscv-none-embed-gcc.path}/bin
 tools.picorvd_tool.cmd=riscv-none-embed-gdb
-tools.picorvd_tool.program.pattern="{path}/{cmd}" -nx --batch -ex "target extended-remote \\\\.\\{serial.port}" -ex "load" -ex "detach" -ex "quit" "{build.path}/{build.project_name}.elf"
+tools.picorvd_tool.program.pattern="{path}/{cmd}" -nx --batch -ex "set remotetimeout 20" -ex "target remote \\\\.\\{serial.port}" -ex "monitor reset halt" -ex "load" -ex "compare-sections" -ex "monitor reset" -ex "detach" -ex "quit" "{build.path}/{build.project_name}.elf"
 tools.picorvd_tool.program.params.verbose=
 tools.picorvd_tool.program.params.quiet=

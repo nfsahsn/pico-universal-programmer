@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "mode": "execute-hil",
+  "timestamp_utc": "2026-11-22T17:18:20.407830+00:00",
+  "host": {
+    "os": "Linux",
+    "release": "7.1.12-200.fc44.x86_64",
+    "arch": "x86_64",
+    "python": "3.14.7"
+  },
+  "artifacts": {
+    "firmware_uf2": "build-pico/pico_universal_PICO_slotA.uf2",
+    "firmware_uf2_sha256": "4ef6b7c9c2a8e0577dcb43b19141815fd2529fce87da60b67a851d77c43b06c1",
+    "pu_binary": "build/pu",
+    "pu_binary_sha256": "2c874ec7afe055cb02e80dc57b160dc11103037f21db24254728738fedab0737"
+  },
+  "probe": {
+    "detected_count": 1,
+    "serial": "5303284719046E9C",
+    "vid": 11914,
+    "pid": 4176,
+    "product": "Pico Universal CMSIS-DAP",
+    "error": ""
+  },
+  "families": [
+    {
+      "family": "ch32v003",
+      "board": "CH32V003F4P6 (16 KiB Flash, 0x00300510, UID 0xB9B9ABCD)",
+      "transport": "PIO1 1-Wire SWIO + GDB",
+      "preflight_check_ok": true,
+      "preflight_verdict": "OK",
+      "vtref_mv": 0,
+      "itarg_ma": 0,
+      "upload_cycles_requested": 100,
+      "upload_cycles_passed": 100,
+      "upload_pass_rate": 1.0,
+      "upload_mean_ms": 4928.173,
+      "upload_last_error": "",
+      "post_upload_check_ok": true,
+      "gdb_smoke_ok": true,
+      "gdb_smoke_note": "passed",
+      "passed": true
+    }
+  ],
+  "cross_family_switch": {
+    "sequence": [
+      "ch32v003"
+    ],
+    "steps": [
+      {
+        "family": "ch32v003",
+        "ok": true,
+        "elapsed_ms": 15.721
+      }
+    ],
+    "passed": true
+  },
+  "summary": {
+    "families_tested": 1,
+    "families_passed": 1,
+    "overall_passed": true
+  }
+}
