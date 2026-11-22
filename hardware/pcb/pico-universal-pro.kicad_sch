@@ -1,0 +1,82 @@
+(kicad_sch
+  (version 20231120)
+  (generator "eeschema")
+  (generator_version "8.0")
+  (uuid "a0000000-0000-4000-8000-000000000001")
+  (paper "A3")
+  (title_block
+    (title "Pico Universal Pro — RP2040 Multi-Protocol USB Programmer & Debugger")
+    (date "2026-11-20")
+    (rev "Rev A (PU_BOARD_PRO_PCB)")
+    (company "Pico Universal Open Hardware")
+    (comment 1 "4-Layer FR-4 JLC04161H-7628 | VID 0x2E8A | 1.8V-5.0V Directional Level Shifting")
+    (comment 2 "GPIO Map synced to config/board_pinout.h (PU_BOARD_PRO_PCB)")
+    (comment 3 "Subsystems: RP2040+W25Q32JV, USB-C+USBLC6+AP2112K, SN74AXC4T774/LVC2T45, SWIO 1k PU, AP22811, INA180A1")
+  )
+  (lib_symbols)
+
+  (text "SUBSYSTEM 1: CORE COMPUTE & 4 MiB QSPI FLASH\n- U1: RP2040 (QFN-56)\n- Y1: ABM8-272-T3 12 MHz +/-20 ppm crystal + C1/C2 18pF\n- U2: W25Q32JVSSIQ (4 MiB QSPI NOR Flash, SOIC-8)\n- Canonical Pinout (config/board_pinout.h PU_BOARD_PRO_PCB):\n  GP0=UART_TX, GP1=UART_RX, GP2=SWCLK_TCK, GP3=SWDIO_TMS,\n  GP4=JTAG_TDI, GP5=JTAG_TDO, GP6=SWDIO_DIR, GP7=TARGET_NRST,\n  GP8=SWIO, GP9=SWIO_PU_EN, GP10=VTARG_EN, GP11=VTARG_FAULT_N,\n  GP12=LED_R, GP13=LED_G, GP14=LED_B, GP15=RECOVERY_BTN,\n  GP26=ADC_VTREF (ADC0), GP27=ADC_ITARG (ADC1)"
+    (exclude_from_sim no)
+    (at 25.4 30.48 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "b0000001-0000-4000-8000-000000000001")
+  )
+
+  (text "SUBSYSTEM 2: USB-C FRONT END & 3.3V REGULATOR\n- J1: USB-C 16-pin receptacle (TYPE-C-31-M-12)\n- R1, R2: 5.1 kOhm 1% CC1/CC2 pull-downs to GND\n- D1: USBLC6-2SC6 low-cap (<1 pF) USB ESD suppressor\n- F1: 500 mA PPTC resettable polyfuse (1206)\n- R3, R4: 27 Ohm 1% series termination on USB_DP / USB_DM (90 Ohm diff pair)\n- U3: AP2112K-3.3TRG1 (600 mA 3.3V LDO, SOT-23-5) + 10uF/1uF ceramics"
+    (exclude_from_sim no)
+    (at 25.4 81.28 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "b0000001-0000-4000-8000-000000000002")
+  )
+
+  (text "SUBSYSTEM 3: WIDE-VOLTAGE DIRECTIONAL LEVEL SHIFTERS (1.8V-5.0V)\n- U4: SN74AXC4T774RSVR (4-ch dir shifter w/ I_off: SWCLK, SWDIO w/ GP6 DIR, TDI, TDO)\n- U5: SN74LVC2T45DCUR (2-ch dir shifter w/ I_off: UART_TX, UART_RX)\n- VCCA = +3V3 (RP2040 side), VCCB = VTREF (target reference 1.8V-5.0V)\n- R5..R12: 27 Ohm 1% series damping on every target-facing signal line\n- D2, D3: TPD4E05U06 (<0.5 pF TVS ESD arrays) on target bus"
+    (exclude_from_sim no)
+    (at 25.4 132.08 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "b0000001-0000-4000-8000-000000000003")
+  )
+
+  (text "SUBSYSTEM 4: CH32V003 1-WIRE SWIO, NRST OPEN-DRAIN & VTARG LOAD SWITCH\n- Q1: BSS138 open-drain active-low NRST driver (gate=GP7)\n- Q2: BSS138 bidirectional open-drain CH32V003 SWIO stage (GP8)\n- Q3: DMG2305UX P-FET + R19 1 kOhm 1% switchable SWIO pull-up to VTREF (ctrl=GP9)\n- U7: AP22811AW5 / TPS2553DBVR 3.3V VTARG load switch (EN=GP10, FAULT_N=GP11, 400 mA ILIM)\n- Note: Enables hardware power-cycle + SWIO hold unbrick of PD1-reused CH32V003 MCUs"
+    (exclude_from_sim no)
+    (at 215.9 30.48 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "b0000001-0000-4000-8000-000000000004")
+  )
+
+  (text "SUBSYSTEM 5: ADC TELEMETRY (VTREF & I_TARG)\n- R21 (10 kOhm 1%) / R22 (10 kOhm 1%) divider on VTREF -> GP26 (ADC0, 0-6.6V FS, ~1.6 mV/LSB)\n- U8: INA180A1IDBVR (Gain=20 V/V) + R20 100 mOhm 1% shunt on VTARG_OUT -> GP27 (ADC1, 0-500 mA)\n- Calibration tolerance: +/-3% verified on bed-of-nails factory QC fixture"
+    (exclude_from_sim no)
+    (at 215.9 81.28 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "b0000001-0000-4000-8000-000000000005")
+  )
+
+  (text "SUBSYSTEM 6: TARGET CONNECTORS, USER INTERFACE & FACTORY POGO PADS\n- J2: Keyed 10-pin 2.54mm shrouded box header (VTREF, VTARG_OUT, GND, SWCLK/TCK, SWDIO/TMS, TDI, TDO, NRST, SWIO, UART_TX/RX)\n- J3: Standard 10-pin 1.27mm ARM Cortex-M SWD/JTAG debug header\n- LED1: Common-cathode RGB SMD LED (GP12=R, GP13=G, GP14=B w/ 220 Ohm ballasts)\n- SW1: Recessed tactile Recovery/BOOTSEL button (GP15 active-LOW, internal PU)\n- TP1..TP16: 1.2mm gold-plated bottom-side pogo pads for all rails, USB, and target I/O"
+    (exclude_from_sim no)
+    (at 215.9 132.08 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "b0000001-0000-4000-8000-000000000006")
+  )
+
+  (global_label "GP0_UART_TX" (shape bidirectional) (at 25.4 185.42 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000001"))
+  (global_label "GP1_UART_RX" (shape bidirectional) (at 25.4 190.50 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000002"))
+  (global_label "GP2_SWCLK_TCK" (shape output) (at 25.4 195.58 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000003"))
+  (global_label "GP3_SWDIO_TMS" (shape bidirectional) (at 25.4 200.66 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000004"))
+  (global_label "GP4_JTAG_TDI" (shape output) (at 25.4 205.74 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000005"))
+  (global_label "GP5_JTAG_TDO" (shape input) (at 25.4 210.82 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000006"))
+  (global_label "GP6_SWDIO_DIR" (shape output) (at 88.9 185.42 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000007"))
+  (global_label "GP7_TARGET_NRST" (shape output) (at 88.9 190.50 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000008"))
+  (global_label "GP8_SWIO" (shape bidirectional) (at 88.9 195.58 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000009"))
+  (global_label "GP9_SWIO_PU_EN" (shape output) (at 88.9 200.66 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000010"))
+  (global_label "GP10_VTARG_EN" (shape output) (at 88.9 205.74 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000011"))
+  (global_label "GP11_VTARG_FAULT_N" (shape input) (at 88.9 210.82 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000012"))
+  (global_label "GP12_LED_R" (shape output) (at 165.1 185.42 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000013"))
+  (global_label "GP13_LED_G" (shape output) (at 165.1 190.50 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000014"))
+  (global_label "GP14_LED_B" (shape output) (at 165.1 195.58 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000015"))
+  (global_label "GP15_RECOVERY_BTN" (shape input) (at 165.1 200.66 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000016"))
+  (global_label "GP26_ADC_VTREF" (shape input) (at 165.1 205.74 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000017"))
+  (global_label "GP27_ADC_ITARG" (shape input) (at 165.1 210.82 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "c0000001-0000-4000-8000-000000000018"))
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)

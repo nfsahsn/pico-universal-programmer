@@ -1,0 +1,33 @@
+Designator,Qty,Manufacturer,MPN,LCSC,Package,Subsystem,Description,RoHS,Unit_USD_Qty250,Ext_USD_Qty250
+U1,1,Raspberry Pi,RP2040,C2040,QFN-56-EP_7x7mm,Compute,Dual-Core ARM Cortex-M0+ MCU with 2x PIO,Yes,0.80,0.80
+U2,1,Winbond,W25Q32JVSSIQ,C82344,SOIC-8_5.3x5.3mm,Compute,32Mbit (4 MiB) 133MHz QSPI NOR Flash,Yes,0.42,0.42
+Y1,1,Abracon,ABM8-272-T3,C284068,SMD-3225_4P,Compute,12.000 MHz +/-20ppm 10pF Crystal,Yes,0.35,0.35
+J1,1,Korean Hroparts,TYPE-C-31-M-12,C165948,USB-C-16P-SMD,USB-C,USB Type-C 16-Pin Mid-Mount/Top Receptacle,Yes,0.28,0.28
+D1,1,STMicroelectronics,USBLC6-2SC6,C7519,SOT-23-6,USB-C,Low-Capacitance (<1pF) USB 2.0 ESD Protection Array,Yes,0.14,0.14
+F1,1,Littelfuse,1206L050PR,C369156,1206,USB-C,500mA Hold / 1A Trip 6V PPTC Resettable Polyfuse,Yes,0.12,0.12
+U3,1,Diodes Inc.,AP2112K-3.3TRG1,C51118,SOT-23-5,Power,3.3V 600mA Low-Dropout CMOS Voltage Regulator,Yes,0.16,0.16
+U4,1,Texas Instruments,SN74AXC4T774RSVR,C2655188,UQFN-16_1.8x2.6mm,LevelShift,4-Bit Dual-Supply Directional Bus Transceiver (0.65V-3.6V/I_off) SWD/JTAG,Yes,0.72,0.72
+U5,1,Texas Instruments,SN74LVC2T45DCUR,C133519,VSSOP-8,LevelShift,2-Bit Dual-Supply Directional Bus Transceiver (1.65V-5.5V/I_off) UART,Yes,0.44,0.44
+U6,1,Texas Instruments,SN74LVC2T45DCUR,C133519,VSSOP-8,LevelShift,2-Bit Dual-Supply Directional Bus Transceiver (1.65V-5.5V/I_off) 5V Tolerant Stage,Yes,0.44,0.44
+D2,1,Texas Instruments,TPD4E05U06DQAR,C129376,USON-10,ESD,4-Channel 0.5pF Low-Cap TVS ESD Protection Array (SWD/JTAG),Yes,0.32,0.32
+D3,1,Texas Instruments,TPD4E05U06DQAR,C129376,USON-10,ESD,4-Channel 0.5pF Low-Cap TVS ESD Protection Array (UART/SWIO/NRST),Yes,0.32,0.32
+Q1,1,ON Semiconductor,BSS138LT1G,C78284,SOT-23,SWIO_NRST,N-Channel MOSFET Open-Drain NRST Driver (GP7),Yes,0.06,0.06
+Q2,1,ON Semiconductor,BSS138LT1G,C78284,SOT-23,SWIO_NRST,N-Channel MOSFET Open-Drain CH32V003 SWIO Stage (GP8),Yes,0.06,0.06
+Q3,1,Diodes Inc.,DMG2305UX-7,C149980,SOT-23,SWIO_NRST,P-Channel MOSFET Switchable 1 kOhm SWIO Pull-Up (GP9),Yes,0.12,0.12
+U7,1,Diodes Inc.,AP22811AW5-7,C2847521,SOT-25,PowerSwitch,3.3V Current-Limited VTARG Load Switch w/ Active-Low FAULT_N (GP10/GP11),Yes,0.42,0.42
+U8,1,Texas Instruments,INA180A1IDBVR,C431507,SOT-23-5,Telemetry,20V/V High-Side Current-Sense Amplifier (ADC1/GP27),Yes,0.58,0.58
+R20,1,Susumu,RL1220S-R10-F,C282745,0805,Telemetry,0.100 Ohm (100 mOhm) 1% 0.25W Current-Sense Shunt Resistor,Yes,0.12,0.12
+J2,1,XKB Connection,DC3-10P-2.54,C49661,IDC-2x5_2.54mm,Connector,Keyed 10-Pin 2.54mm Shrouded Box Header (Universal Target Port),Yes,0.18,0.18
+J3,1,XKB Connection,X8821WV-2x05-N01,C2685144,IDC-2x5_1.27mm,Connector,Standard 10-Pin 1.27mm ARM Cortex Debug Header,Yes,0.22,0.22
+LED1,1,Everlight,19-337/R6GHBHC-A01/2T,C192315,SMD-0606-4P,UI,Diffused Common-Cathode RGB Status LED (GP12/13/14),Yes,0.14,0.14
+SW1,1,ALPS,SKRPACE010,C115357,SMD-4.2x3.2mm,UI,Recessed Tactile Recovery/BOOTSEL Pushbutton (GP15),Yes,0.16,0.16
+R1-R2,2,Yageo,RC0402FR-075K1L,C25905,0402,USB-C,5.1 kOhm 1% USB-C CC1/CC2 Pull-Down Resistors,Yes,0.01,0.02
+R3-R4,2,Yageo,RC0402FR-0727RL,C25190,0402,USB-C,27 Ohm 1% USB DP/DM Series Termination Resistors,Yes,0.01,0.02
+R5-R12,8,Yageo,RC0402FR-0727RL,C25190,0402,LevelShift,27 Ohm 1% Target Signal Series Damping Resistors,Yes,0.01,0.08
+R19,1,Yageo,RC0402FR-071KL,C11702,0402,SWIO_NRST,1.00 kOhm 1% Switchable CH32V003 SWIO Pull-Up Resistor,Yes,0.01,0.01
+R21-R22,2,Yageo,RC0402FR-0710KL,C25744,0402,Telemetry,10.0 kOhm 1% VTREF Precision Voltage Divider (ADC0/GP26),Yes,0.01,0.02
+R23-R25,3,Yageo,RC0402FR-07220RL,C25091,0402,UI,220 Ohm 1% RGB LED Current-Limiting Ballasts,Yes,0.01,0.03
+C1-C16,16,Samsung,CL05B104KO5NNNC,C1525,0402,Decoupling,100nF 16V X7R Decoupling Capacitors (RP2040/Shifters/LDO),Yes,0.01,0.16
+C17-C20,4,Samsung,CL10A106KP8NNNC,C19702,0603,Decoupling,10uF 10V X5R Bulk Decoupling Capacitors,Yes,0.02,0.08
+PCB_FAB,1,JLCPCB,JLC04161H-7628-4L-ENIG,CUSTOM,55x24mm_4L,PCB,4-Layer FR-4 ENIG Controlled-Impedance PCB (incl. PCBA SMT share @ 250 qty),Yes,2.45,2.45
+ENCLOSURE,1,Custom,PU-CASE-ASA-SNAP,CUSTOM,58.6x27.6x12.8mm,Mechanical,Snap-Fit Laser-Etched ASA Enclosure + 10-Pin Color Ribbon Cable,Yes,1.10,1.10

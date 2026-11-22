@@ -1,0 +1,78 @@
+; Pico Universal — PIO0 ARM SWD physical layer (16 instructions)
+;
+; Pin mapping:
+;   side-set pin 0 : PU_PIN_SWCLK_TCK (GP2)
+;   out/in pin 0   : PU_PIN_SWDIO_TMS (GP3)
+;   set pin 0      : PU_PIN_SWDIO_DIR (GP6 on PU_BOARD_PRO_PCB with set_count=1;
+;                    disabled via set_count=0 on PU_BOARD_PICO so GP6 NRST is untouched)
+;
+; Command header word (32-bit, right-shifted):
+;   bits [7:0] : (bit_count - 1), 0..31 -> 1..32 bits
+;   bit  [8]   : is_write (1 = host writes, 0 = input/turnaround)
+;   bit  [9]   : pindir   (1 = output on write, 0 = Hi-Z on input/turnaround)
+
+.program pu_swd
+.side_set 1 opt
+
+.wrap_target
+public get_cmd:
+    pull block                  side 0  ; [0]  Fetch command header, hold SWCLK low
+    out x, 8                            ; [1]  X = bit_count - 1
+    out y, 1                            ; [2]  Y = is_write
+    jmp !y, input_mode                  ; [3]  0 -> read / turnaround path
+    set pins, 1                         ; [4]  Pro PCB: SWDIO_DIR = 1 (Host->Target) before OE
+    out pindirs, 1                      ; [5]  RP2040 SWDIO pindir = 1 (from cmd bit 9)
+    pull block                          ; [6]  Fetch 32-bit write payload
+write_loop:
+    out pins, 1             [1] side 0  ; [7]  Drive SWDIO while SWCLK low (2 cycles)
+    jmp x--, write_loop     [1] side 1  ; [8]  Raise SWCLK high (2 cycles), latch bit
+    jmp get_cmd                 side 0  ; [9]  Return SWCLK low
+
+input_mode:
+    out pindirs, 1              side 0  ; [10] RP2040 SWDIO pindir = 0 FIRST (from cmd bit 9)
+    set pins, 0                         ; [11] Pro PCB: SWDIO_DIR = 0 (Target->Host) after Hi-Z
+read_loop:
+    nop                     [1] side 0  ; [12] SWCLK low for 2 cycles (target + shifter settle)
+    in pins, 1              [1] side 1  ; [13] Sample settled SWDIO & raise SWCLK (2 cycles)
+    jmp x--, read_loop          side 0  ; [14] Lower SWCLK and repeat
+    push block                  side 0  ; [15] Push captured ISR word to RX FIFO & wrap
+.wrap
+
+% c-sdk {
+#include "hardware/gpio.h"
+#include "config/board_pinout.h"
+
+static inline void pu_swd_program_init(PIO pio, uint sm, uint offset, uint32_t clkdiv_q16_8) {
+    pio_sm_config c = pu_swd_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, PU_PIN_SWCLK_TCK);
+    sm_config_set_out_pins(&c, PU_PIN_SWDIO_TMS, 1u);
+    sm_config_set_in_pins(&c, PU_PIN_SWDIO_TMS);
+#if PU_HAS_LEVEL_SHIFTER
+    sm_config_set_set_pins(&c, PU_PIN_SWDIO_DIR, 1u);
+#else
+    sm_config_set_set_pins(&c, PU_PIN_SWDIO_TMS, 0u);
+#endif
+    sm_config_set_out_shift(&c, true, false, 32u);
+    sm_config_set_in_shift(&c, true, false, 32u);
+    c.clkdiv = (clkdiv_q16_8 << PIO_SM0_CLKDIV_FRAC_LSB);
+
+    pio_gpio_init(pio, PU_PIN_SWCLK_TCK);
+    pio_gpio_init(pio, PU_PIN_SWDIO_TMS);
+    gpio_pull_up(PU_PIN_SWDIO_TMS);
+#if PU_HAS_LEVEL_SHIFTER
+    pio_gpio_init(pio, PU_PIN_SWDIO_DIR);
+    pio_sm_set_pins_with_mask(pio, sm,
+                              (1u << PU_PIN_SWDIO_TMS) | (1u << PU_PIN_SWDIO_DIR),
+                              (1u << PU_PIN_SWCLK_TCK) | (1u << PU_PIN_SWDIO_TMS) | (1u << PU_PIN_SWDIO_DIR));
+    pio_sm_set_consecutive_pindirs(pio, sm, PU_PIN_SWCLK_TCK, 2u, true);
+    pio_sm_set_consecutive_pindirs(pio, sm, PU_PIN_SWDIO_DIR, 1u, true);
+#else
+    pio_sm_set_pins_with_mask(pio, sm,
+                              (1u << PU_PIN_SWDIO_TMS),
+                              (1u << PU_PIN_SWCLK_TCK) | (1u << PU_PIN_SWDIO_TMS));
+    pio_sm_set_consecutive_pindirs(pio, sm, PU_PIN_SWCLK_TCK, 2u, true);
+#endif
+    pio_sm_init(pio, sm, offset + pu_swd_offset_get_cmd, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

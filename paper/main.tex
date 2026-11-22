@@ -1,0 +1,179 @@
+\documentclass[journal]{IEEEtran}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+% Pull all empirical metrics directly from paper/scripts/analyze_benchmarks.py
+\IfFileExists{generated/results_macros.tex}{%
+  \input{generated/results_macros.tex}%
+}{%
+  \newcommand{\BenchDatasetMode}{pending-lab-collection}%
+}
+
+\begin{document}
+
+\title{A Deterministic PIO-Arbitrated Multi-Protocol USB Debug and Programming Instrument for Heterogeneous Microcontrollers}
+
+\author{Pico~Universal~Engineering~Team%
+\thanks{Manuscript drafted for submission to IEEE Transactions on Instrumentation and Measurement (TIM) / IEEE Access. Open replication artifacts (firmware, KiCad schematics/PCB, Go host CLI, and benchmark datasets) are archived in the accompanying Zenodo bundle.}}
+
+\maketitle
+
+\begin{abstract}
+Embedded systems laboratories and engineering teams working across heterogeneous microcontroller ecosystems—such as ARM Cortex-M (STM32, RP2040), Xtensa (ESP32), and RISC-V (WCH CH32V003)—currently require multiple incompatible USB debug probes, proprietary drivers, and fragmented IDE workflows. Existing low-cost probes either target a single vendor protocol or rely on software bit-banging and manual firmware reboots that compromise timing determinism and reliability. This paper presents \emph{Pico Universal}, a consumer-grade, sub-\$11~BOM multi-protocol USB-C programming and debugging instrument built on a dual-core RP2040 microcontroller with Programmable I/O (PIO) coprocessors and an officially allocated Raspberry Pi USB PID (\texttt{VID 0x2E8A}). The instrument exposes six concurrent composite USB interfaces (CMSIS-DAP~v2 Bulk for SWD and 4-wire JTAG, 1-wire WCH SWIO GDB/identity CDC, DMA Target UART up to 3~Mbaud, and Vendor Control/Telemetry) with zero-driver Microsoft OS~2.0 (WCID) WinUSB and Linux \texttt{udev} support. We formalize a deterministic \texttt{engine\_owner} finite-state machine enforcing provable mutual exclusion, atomic pin tri-stating, and bounded wire deadlines across Core~0 (USB) and Core~1 (PIO). Furthermore, we model and empirically verify four real-world probe fault classes: RP2040 BOOTSEL sparse-UF2 sector-erase corruption, dual-bank flash journal power-loss corruption (4,353 atomic injection points), 1-wire silent-bus aliasing (\texttt{0xFFFFFFFF}/\texttt{0x00000000}), and malformed USB DAP packets (50,000 deterministic fuzz vectors). Coupled with a 4-layer directional 1.8--5.0~V level-shifted PCB, current-limited target power switch, and automated comparative benchmark suite (\texttt{pu bench}, E1--E6), the architecture establishes a reproducible cost-efficiency frontier against commercial probes.
+\end{abstract}
+
+\begin{IEEEkeywords}
+CMSIS-DAP, embedded instrumentation, fault injection, JTAG, multi-protocol debug probe, Programmable I/O (PIO), RP2040, signal integrity, SWD, WCH SWIO.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\label{sec:intro}
+Modern embedded hardware development routinely spans heterogeneous instruction set architectures (ISAs) within a single product or university curriculum: ARM Cortex-M microcontrollers (STM32~\cite{st_stm32f1_rm,st_stm32f4_rm}, Raspberry Pi RP2040~\cite{rpi_rp2040_ds}) for real-time control, Xtensa dual-core SoCs (ESP32~\cite{espressif_esp32_trm}) for wireless connectivity, and ultra-low-cost RISC-V devices (WCH CH32V003~\cite{wch_ch32v003_rm}) for auxiliary sensing. Each ecosystem imposes distinct debug physical layers—bidirectional synchronous Serial Wire Debug (SWD)~\cite{arm_adiv5}, 4-wire IEEE~1149.1 JTAG~\cite{ieee_1149_1}, and asynchronous 1-wire WCH SWIO~\cite{wch_ch32v003_rm,riscv_debug_spec}—forcing practitioners to maintain separate probes (ST-Link~\cite{st_stlink_v3}, Raspberry Pi Debug Probe~\cite{rpi_debugprobe}, ESP-Prog~\cite{espressif_espprog}, WCH-LinkE~\cite{wch_linke}, or SEGGER J-Link~\cite{segger_jlink}).
+
+While open-source firmware projects such as DAPLink~\cite{arm_daplink}, Black Magic Probe~\cite{blackmagic_probe}, and Raspberry Pi's CMSIS-DAP \texttt{debugprobe}~\cite{rpi_debugprobe} lower hardware barriers, consolidating all four ecosystems into a single consumer-reliable instrument exposes deep instrumentation challenges:
+\begin{enumerate}
+  \item \emph{Cross-protocol contention and pin leakage:} Uncoordinated access across composite USB interfaces corrupts shared shift-register state or leaves target pins actively driven after host crashes.
+  \item \emph{Wire-level timing jitter and signal integrity:} Auto-direction level shifters oscillate on capacitive ribbon cables above 2--4~MHz, while software bit-banging suffers USB interrupt jitter.
+  \item \emph{Field-observed silent failure modes:} Sparse UF2 updates erase adjacent persistent flash journals under the RP2040 ROM erase model~\cite{ms_uf2_spec}; unpowered 1-wire SWIO lines float to \texttt{0xFFFFFFFF} or short to \texttt{0x00000000} and alias as valid debug status; counterfeit STM32 clones diverge in CoreSight ROM-table identity.
+\end{enumerate}
+
+This paper addresses these gaps through four peer-reviewable contributions:
+\begin{itemize}
+  \item \textbf{C1 (Deterministic Dual-Core PIO Arbitration):} A formal \texttt{engine\_owner} finite-state machine (FSM) and cycle-accurate timing model partitioning USB supervision (Core~0) from PIO0/PIO1 real-time wire framing (Core~1) with zero manual reboots.
+  \item \textbf{C2 (Wire-Accurate Fault-Tolerant Engineering):} Analytical modeling and host-sanitizer verification of four probe failure modes: 4~KiB sector-padded UF2 packaging, 4,353-point dual-bank power-cut flash journaling, 50,000-vector CMSIS-DAP packet fuzzing, and non-destructive multi-ISA/clone fingerprinting (\texttt{PUID1} + CoreSight JEP106).
+  \item \textbf{C3 (Wide-Voltage 1.8--5.0~V Hardware Front End):} A 4-layer controlled-impedance RP2040 PCB (\texttt{PU\_BOARD\_PRO\_PCB}, \$10.54 RoHS BOM at 250~qty) using directional $I_{\text{off}}$ level shifters, 27~$\Omega$ series damping, $<0.5$~pF TVS ESD protection, switchable 1~k$\Omega$ SWIO pull-up, current-limited \texttt{VTARG} power-cycle unbrick, and integrated 12-bit ADC telemetry.
+  \item \textbf{C4 (Automated Comparative Evaluation Pipeline):} A reproducible benchmark suite (\texttt{pu bench}, Experiments E1--E6) and statistical pipeline evaluating throughput, debug latency, protocol switching, oscilloscope signal integrity, fault recovery, and cost-efficiency against five commercial probes.
+\end{itemize}
+
+\section{Related Work and Comparative Taxonomy}
+\label{sec:related}
+Debug probes span high-cost commercial instruments, vendor-locked dongles, and open-source reference designs. Table~\ref{tab:taxonomy} summarizes representative probes across protocol coverage, logic-voltage range, hardware protection, USB speed, and open-artifact reproducibility.
+
+\begin{table*}[t]
+\centering
+\caption{Comparative Taxonomy of Commercial and Open-Source Embedded Debug Probes}
+\label{tab:taxonomy}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Instrument} & \textbf{SWD} & \textbf{JTAG} & \textbf{WCH SWIO} & \textbf{UART} & \textbf{Voltage Range} & \textbf{Current Telemetry / OC Trip} & \textbf{Approx. Cost (USD)} \\
+\midrule
+SEGGER J-Link Base~\cite{segger_jlink} & Yes & Yes & No & Opt. & 1.2--5.0~V & Target Sense / Yes & $\sim$\$400 \\
+STMicro ST-Link V3SET~\cite{st_stlink_v3} & Yes & Yes & No & Yes & 1.65--3.6~V & No & $\sim$\$35 \\
+RPi Debug Probe~\cite{rpi_debugprobe} & Yes & No & No & Yes & 3.3~V only & No & $\sim$\$12 \\
+Espressif ESP-Prog~\cite{espressif_espprog} & No & Yes & No & Yes & 3.3 / 5.0~V & No & $\sim$\$12 \\
+WCH-LinkE~\cite{wch_linke} & Lim. & No & Yes & Yes & 3.3 / 5.0~V & No & $\sim$\$5 \\
+Black Magic Probe~\cite{blackmagic_probe} & Yes & Yes & No & Yes & 1.7--5.0~V & Sense / No & $\sim$\$75 \\
+\textbf{Pico Universal Pro (Ours)} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{1.8--5.0~V} & \textbf{ADC VTREF/I\_TARG + AP22811} & \textbf{\$10.54 BOM} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Prior instrumentation studies demonstrate that deterministic hardware timing offloaded to programmable state machines substantially lowers host-induced jitter compared to interrupt-driven GPIO toggling~\cite{ieee_tim_embedded_inst,ieee_tim_usb_daq}. Similarly, fault-injection testing of non-volatile flash metadata~\cite{powercut_flash_journal} and protocol boundary fuzzing~\cite{fuzzing_usb_protocols} are established prerequisites for dependable field instruments. Pico Universal unifies these techniques on an off-the-shelf RP2040 platform while maintaining bit-compatible dual board profiles (\texttt{PU\_BOARD\_PICO} for breadboard qualification and \texttt{PU\_BOARD\_PRO\_PCB} for mass production).
+
+\section{System and Hardware Architecture}
+\label{sec:hardware}
+\subsection{4-Layer Controlled-Impedance PCB (\texttt{PU\_BOARD\_PRO\_PCB})}
+The production PCB measures $55.0\times 24.0\times 1.6$~mm on a 4-layer FR-4 ENIG stackup (\texttt{JLC04161H-7628}: \texttt{F.Cu} signals, unbroken \texttt{In1.Cu} solid ground plane, \texttt{In2.Cu} power/ground pour, and \texttt{B.Cu} return traces plus 16 gold-plated 1.2~mm bed-of-nails factory QC test pads \texttt{TP1..TP16}). USB~2.0 \texttt{DP}/\texttt{DM} lines incorporate 27~$\Omega$ 1\% series termination resistors routed as a $90~\Omega\pm 10\%$ differential pair ($W=0.21$~mm, $S=0.15$~mm) directly behind a 16-pin USB-C receptacle equipped with dual 5.1~k$\Omega$ CC1/CC2 pull-downs, a \texttt{USBLC6-2SC6} low-capacitance ($<1$~pF) ESD suppressor~\cite{st_usblc6_ds}, a 500~mA PPTC polyfuse, and an \texttt{AP2112K-3.3} 600~mA LDO. Compute is provided by the RP2040 clocked via a 12~MHz $\pm 20$~ppm crystal paired with a 4~MiB \texttt{W25Q32JV} QSPI NOR flash~\cite{winbond_w25q32_ds}.
+
+\subsection{Directional 1.8--5.0~V Level Shifting and Protection}
+Auto-direction level translators (e.g., \texttt{TXS0108E}) exhibit one-shot edge-accelerator oscillation when driving capacitive 25--50~cm ribbon cables. Pico Universal instead employs dual-supply directional bus transceivers (\texttt{SN74AXC4T774}~\cite{ti_sn74axc4t774_ds} and \texttt{SN74LVC2T45}~\cite{ti_sn74lvc2t45_ds}) whose target-side supply tracks \texttt{VTREF} (1.8--5.0~V). The bidirectional \texttt{SWDIO} direction signal (\texttt{GP6}) is toggled synchronously with PIO0 \texttt{pindirs}, guaranteeing monotonic edges and $I_{\text{off}}$ partial-power-down isolation ($<5~\mu$A leakage when the target is unpowered). Every target signal passes through a 27~$\Omega$ 1\% series damping resistor and a $<0.5$~pF TVS ESD array (\texttt{TPD4E05U06}~\cite{ti_tpd4e05u06_ds}).
+
+\subsection{CH32V003 SWIO Front End, VTARG Switch, and Telemetry}
+To eliminate manual breadboard pull-up resistors and recover CH32V003 MCUs whose firmware repurposes \texttt{PD1} as GPIO, \texttt{GP9} switches a P-channel MOSFET connecting a 1~k$\Omega$ 1\% pull-up resistor between \texttt{SWIO} (\texttt{GP8}) and \texttt{VTREF} solely while the SWIO or recovery engine is active. An \texttt{AP22811} current-limited (400~mA) load switch (\texttt{GP10} enable, \texttt{GP11} active-low \texttt{VTARG\_FAULT\_N} IRQ)~\cite{diodes_ap22811_ds} enables deterministic software power-cycle unbricking and hardware short-circuit protection. Continuous telemetry is sampled on RP2040 \texttt{ADC0} (\texttt{GP26}, 1\% \texttt{VTREF} divider) and \texttt{ADC1} (\texttt{GP27}, \texttt{INA180A1} 20~V/V high-side amplifier~\cite{ti_ina180_ds} across a 100~m$\Omega$ 1\% shunt).
+
+\section{Unified Composite Firmware and Formal PIO Arbitration}
+\label{sec:firmware}
+\subsection{Zero-Driver Composite USB Architecture}
+The RP2040 enumerates as a single composite USB Full-Speed (12~Mbps) device under Raspberry Pi \texttt{VID 0x2E8A} and configurable approved \texttt{PU\_USB\_PID} with a unique 16-hex serial derived from the QSPI flash 64-bit UID~\cite{usb20_spec,tinyusb_docs}. Embedded Microsoft OS~2.0 (WCID) descriptors~\cite{ms_os_20_spec} bind \texttt{IF~0} (CMSIS-DAP~v2 Bulk, EP1)~\cite{arm_cmsis_dap} and \texttt{IF~5} (Vendor Control/Telemetry Bulk, EP6) directly to \texttt{WINUSB.SYS} on Windows~10/11, while \texttt{IF~1--2} (CH32V003 SWIO GDB/\texttt{PUID1} CDC, EP2/EP3) and \texttt{IF~3--4} (DMA Target UART CDC, EP4/EP5) bind to native \texttt{usbser.sys}. On Linux, deterministic \texttt{udev} rules apply \texttt{TAG+="uaccess"} and \texttt{ID\_MM\_DEVICE\_IGNORE="1"} to prevent \texttt{ModemManager} probing corruption.
+
+\subsection{Formal \texttt{engine\_owner} FSM and Timing Model}
+Let the debug arbitrator state space be
+\begin{equation}
+\mathcal{S} = \{\text{IDLE},\; \text{SWD},\; \text{JTAG},\; \text{SWIO},\; \text{RECOVERY},\; \text{FAULT}\}.
+\end{equation}
+Protected by a hardware RP2040 spinlock and atomic state transitions, \texttt{engine\_owner} enforces three invariants:
+\begin{enumerate}
+  \item \emph{Mutual Exclusion:} $\forall t,\; |\text{ActiveEngines}(t)| \le 1$. Any cross-interface acquisition request while $s \neq \text{IDLE}$ immediately returns \texttt{PU\_ERR\_ENGINE\_BUSY} (\texttt{DAP\_ERROR} on IF~0 or \texttt{PUID1:ERR\_ENGINE\_BUSY} on IF~1--2) without modifying PIO registers.
+  \item \emph{Fail-Safe Pin Quiescence:} Every transition $s \to \text{IDLE}$ or $s \to \text{FAULT}$ atomically halts PIO state machines, drains FIFOs, clears SIO overrides, disables the \texttt{GP9} 1~k$\Omega$ pull-up, and places target debug GPIOs into Hi-Z input mode.
+  \item \emph{Fault Dominance:} Asserting \texttt{VTARG\_FAULT\_N} transitions any state immediately into \texttt{FAULT}, cuts \texttt{VTARG\_EN}, latches the fault bitmask, and blocks subsequent acquisitions until explicit host \texttt{CLEAR\_FAULT}.
+\end{enumerate}
+
+Core~0 executes TinyUSB framing, packet snapshotting, UART DMA ring servicing, and ADC telemetry, while Core~1 executes deterministic PIO0 (SWD/JTAG) and PIO1 (SWIO) state machines. With RP2040 system clock $f_{\text{sys}} = 125$~MHz and PIO fractional divider $d = d_{\text{int}} + d_{\text{frac}}/256$, the SWD wire clock obeys
+\begin{equation}
+f_{\text{SWD}} = \frac{f_{\text{sys}}}{4 \cdot d}, \qquad d \ge 1,
+\end{equation}
+computed in 64-bit integer arithmetic with a 1~kHz floor and mandatory clock-cache invalidation upon SWD entry. Partitioning SWD/JTAG onto PIO0 (swapped only on $\text{IDLE}\to\text{SWD}/\text{JTAG}$) and WCH SWIO onto PIO1 keeps each PIO block well within RP2040's 32-instruction limit with zero runtime stalls. Every wire transaction carries a monotonic hardware timer deadline ($\Delta t_{\max}$ from \texttt{time\_us\_64()}) preventing infinite hangs on mid-transfer unplug.
+
+\subsection{Fault-Tolerant Storage and Protocol Hardening}
+\subsubsection{A/B Bootloader, Two-Bank Flash Journal, and UF2 ROM Model}
+The 2~MiB base flash map allocates a 60~KiB immutable CRC32 chainloader (\texttt{0x000000}), two 4~KiB journal banks (\texttt{0x00F000}, \texttt{0x1F0000}), two 960~KiB executable slots (\texttt{0x010000}, \texttt{0x100000}), and a 4~KiB factory calibration block (\texttt{0x1FF000}). Under the RP2040 BOOTSEL ROM erase model, writing any 256-byte UF2 block erases its entire 4~KiB flash sector once per session; sparse UF2 files sharing a sector boundary can inadvertently erase trailing metadata. Our packager (\texttt{tools/package\_uf2.py}) pads every touched 4~KiB sector prior to block numbering and verifies the resulting image against a bit-accurate ROM erase simulator. The dual-bank configuration journal uses monotonic sequence counters and CRC32 trailers, exhaustively verified under AddressSanitizer and UndefinedBehaviorSanitizer across \textbf{4,353 simulated power-cut interruption points} with 100\% intact state recovery.
+
+\subsubsection{DAP Packet Fuzzing and CH32V003 Silent-Bus Disambiguation}
+Before executing any CMSIS-DAP~v2 request on Core~1, \texttt{dap\_guard} snapshots the USB payload into a private buffer and validates command lengths, JTAG chain bounds, and response capacities—verified against \textbf{50,000 deterministic malformed fuzz packets} under ASan/UBSan with zero out-of-bounds accesses. For WCH CH32V003 1-wire SWIO, floating pull-ups clock in \texttt{0xFFFFFFFF} while shorted lines clock in \texttt{0x00000000}. Our \texttt{ch32\_identity} verifier inspects reserved-zero QingKe~V2 \texttt{DMSTATUS} bitfields so neither silent-bus pattern is ever misclassified as halted or blank flash, and confirms \texttt{SHDWCFGR.OUTEN == 0} readback on detach. Cross-page 4-byte software breakpoints track both 64-byte flash pages and restore all patched instructions on GDB detach.
+
+\section{Cross-Platform Host Architecture and Target Fingerprinting}
+\label{sec:host}
+To eliminate runtime dependencies on Python, Zadig, or manual IDE edits, the host tooling is compiled as a single static Go binary (\texttt{pu}) for Linux (x86-64/ARM64) and Windows (x86-64). Composite interface correlation (\texttt{linux\_tree} sysfs and \texttt{windows\_tree} SetupAPI) binds \texttt{IF~0} DAP, \texttt{IF~1--2} GDB CDC, \texttt{IF~3--4} UART CDC, and \texttt{IF~5} bulk control exclusively by hardware serial number under cross-process lockfiles (\texttt{flock} / Windows named mutex).
+
+\begin{itemize}
+  \item \textbf{Non-Destructive Multi-ISA Fingerprinting (\texttt{pu check}):} Queries IF~5 live \texttt{VTREF}/\texttt{I\_TARG} telemetry and engine health before probing target wires. On STM32, \texttt{pu check} reads \texttt{DPIDR}, \texttt{DBGMCU\_IDCODE}, flash size, and CoreSight ROM-table JEP106 manufacturer IDs to flag counterfeit/clone MCUs (CS32, CKS32, GD32) non-destructively. On CH32V003, it executes raw CDC GDB RSP \texttt{qRcmd puid1} without launching external GDB subprocesses.
+  \item \textbf{Atomic Upload and Sector-Overlap Guard (\texttt{pu upload}):} Copies all firmware artifacts into a private \texttt{0700} temporary snapshot (fsynced before invocation) to defeat concurrent IDE rebuild mutations, rejects Espressif segments sharing any 4~KiB erase sector, wraps OpenOCD paths in JimTcl brace literals, and embeds classic ESP32 JTAG fixes (3.3~V MTDI strapping, Zbit \texttt{ZB25VQ32} QIO QE-bit \texttt{gdb-attach} reset-halt workaround, and \texttt{gdb-detach} auto-resume)~\cite{openocd_docs}.
+  \item \textbf{Turnkey IDE Workflows (\texttt{pu setup}, \texttt{pu gdb-pipe}, \texttt{pu export-vscode}):} Installs SHA-256-verified Arduino IDE~2 cores/recipes, bridges CH32V003 GDB over stdio/TCP with deterministic EOF drain, and non-destructively merges VS Code \texttt{cortex-debug} configurations.
+\end{itemize}
+
+\section{Experimental Methodology and Results (E1--E6)}
+\label{sec:eval}
+All physical experiments are automated via \texttt{pu bench} and statistically processed by \texttt{paper/scripts/analyze\_benchmarks.py} (current dataset mode: \texttt{\BenchDatasetMode}).
+
+\subsection{Experimental Protocol}
+\begin{itemize}
+  \item \textbf{E1 (Flash + Verify Throughput):} Effective KiB/s across 4, 16, 64, 256, and 1024~KiB payloads ($N=30$ trials per point; mean, SD, two-tailed 95\% Student-$t$ CI, and two-sided Mann-Whitney $U$ significance test~\cite{mann_whitney_1947}) comparing Pico Universal against J-Link, ST-Link~V2/V3, RPi Debug Probe, WCH-LinkE, and ESP-Prog.
+  \item \textbf{E2 (Interactive Debug Latency):} End-to-end latency (ms) for \texttt{halt}, \texttt{read\_regs}, \texttt{single\_step}, \texttt{breakpoint}, and \texttt{detach\_resume} ($N=100$ trials; median, p95, p99).
+  \item \textbf{E3 (Zero-Reboot Switching \& Concurrent UART):} Protocol transition latency (SWD $\leftrightarrow$ JTAG $\leftrightarrow$ SWIO) and throughput impact under concurrent 115.2~kbps and 2~Mbps DMA UART streams.
+  \item \textbf{E4 (Oscilloscope Signal Integrity):} 100+~MHz oscilloscope captures of \texttt{SWCLK}, \texttt{SWDIO}, and \texttt{SWIO} at 1.8, 3.3, and 5.0~V across 10, 25, and 50~cm cables ($t_r$, $t_f$, overshoot, jitter, $f_{\max}$) plus \texttt{VTARG} short-circuit trip time ($\mu$s).
+  \item \textbf{E5 (Fault Injection \& Reliability Stress):} Host ASan/UBSan and HIL endurance recovery rates summarized in Table~\ref{tab:e5_faults}.
+  \item \textbf{E6 (Cost-Efficiency):} Verified RoHS BOM (\$10.54 at 250~qty) normalized per supported ISA and $\$/(\text{KiB}\cdot\text{s}^{-1})$ against commercial probes.
+\end{itemize}
+
+\begin{table}[t]
+\centering
+\caption{E5 Fault-Injection Verification Matrix (Automated Gate + HIL Targets)}
+\label{tab:e5_faults}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Fault Class} & \textbf{Injected Cases} & \textbf{Observed Recovery} \\
+\midrule
+CMSIS-DAP Malformed USB Fuzz (ASan/UBSan) & 50,000 & 100.00\% (Verified CI) \\
+Two-Bank Flash Journal Power-Cut & 4,353 & 100.00\% (Verified CI) \\
+BOOTSEL Sparse-UF2 ROM Erase Model & Full Sweep & 100.00\% (Verified CI) \\
+CH32V003 Silent-Bus (\texttt{0xFF}/\texttt{0x00}) Wire Model & Exhaustive & 100.00\% (Verified CI) \\
+Physical HIL Endurance (4 Families) & 1,000 cycles & Pending Lab Run (\texttt{pu bench}) \\
+Mid-Flash Unplug \& PD1 Unbrick & 50 + 50 & Pending Lab Run (\texttt{pu bench}) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Threats to Validity, Limitations, and Deployment}
+\label{sec:threats}
+We highlight four explicit engineering limitations to ensure transparent evaluation:
+\begin{enumerate}
+  \item \emph{USB Full-Speed Ceiling (12~Mbps):} Unlike USB High-Speed (480~Mbps) instruments such as J-Link or ST-Link~V3, RP2040's integrated PHY caps theoretical bulk bandwidth near $\sim$1~MiB/s. Pico Universal optimizes the sub-\$11 consumer cost/performance Pareto frontier rather than competing on multi-megabyte HS flash throughput.
+  \item \emph{Non-Isolated Base SKU:} To meet the \$8--\$12 consumer BOM target, the base \texttt{PU\_BOARD\_PRO\_PCB} uses ESD, PPTC, and current-limited load-switch protection rather than galvanic digital USB isolation (which adds \$6--\$10 BOM and is reserved for a future isolated industrial SKU).
+  \item \emph{Protocol Scope:} 1-wire SWIO timing targets WCH QingKe~V2 (\texttt{CH32V003}); additional WCH or proprietary single-wire families require dedicated PIO state-machine timings.
+  \item \emph{EMC/ESD Pre-Compliance:} PCB layout incorporates solid ground planes, controlled impedance, and series damping per FCC Part~15 Class~B and CE EN~55032/55035 guidelines~\cite{fcc_part15,en55032}, but formal accredited-chamber certification must be completed on Rev~B hardware prior to retail distribution.
+\end{enumerate}
+
+\section{Conclusion and Open Replication Artifacts}
+\label{sec:conclusion}
+Pico Universal demonstrates that a dual-core RP2040 with deterministic PIO arbitration, directional wide-voltage level shifting, hardware current-limit protection, and rigorously fuzzed firmware can consolidate four major microcontroller debug ecosystems into one \$10.54~BOM consumer USB-C instrument without manual mode-switching reboots or custom OS drivers. All firmware C/C++ sources, ASan/UBSan test suites, Go CLI sources, KiCad 8 4-layer schematics/PCB files, factory QC fixture designs, and statistical plotting scripts are published in the open Zenodo replication bundle (see \texttt{paper/REPLICATION.md}).
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

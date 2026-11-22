@@ -1,0 +1,27 @@
+(kicad_sch
+  (version 20231120)
+  (generator "eeschema")
+  (generator_version "8.0")
+  (uuid "f0000000-0000-4000-8000-000000000001")
+  (paper "A4")
+  (title_block
+    (title "Pico Universal Pro — Bed-of-Nails Factory QC Test Fixture (Jig Rev A)")
+    (date "2026-11-20")
+    (rev "Rev A")
+    (company "Pico Universal Manufacturing")
+    (comment 1 "Mates with B.Cu pogo test pads TP1..TP16 on pico-universal-pro.kicad_pcb")
+    (comment 2 "30-second automated pass/fail sequence driven by `pu factory-qc`")
+  )
+  (lib_symbols)
+
+  (text "FACTORY QC FIXTURE ARCHITECTURE (POGO-PIN BED OF NAILS)\n1. POGO ARRAY (16x P75-E2 Spring Test Probes matching DUT B.Cu TP1..TP16):\n   TP1=GND, TP2=+5V_USB, TP3=+3V3, TP4=VTREF, TP5=VTARG_OUT,\n   TP6=SWCLK_TCK, TP7=SWDIO_TMS, TP8=JTAG_TDI, TP9=JTAG_TDO,\n   TP10=TARGET_NRST, TP11=SWIO, TP12=UART_TX, TP13=UART_RX,\n   TP14=RECOVERY_BTN, TP15=USB_DP, TP16=USB_DM\n\n2. RAIL QUIESCENT CURRENT GATE (Pre-USB Bring-Up):\n   - INA219 high-side monitor on fixture 5V feed rejects DUTs drawing >25 mA idle\n   - MOSFET relay connects USB_DP/USB_DM only after +3V3 rail verifies 3.30V +/-2%\n\n3. PROGRAMMABLE VTREF REFERENCE & LOOPBACK MATRIX:\n   - Selectable 1.800V / 3.300V / 5.000V precision reference (+/-0.2%) injected into TP4 (VTREF)\n   - 6-channel analog mux loops SWCLK<->TDO, SWDIO<->TDI, UART_TX<->UART_RX, SWIO/NRST check\n\n4. OVERCURRENT SHORT-CIRCUIT TRIP STAGE:\n   - Controlled 1.0 Ohm 2W load resistor switched onto TP5 (VTARG_OUT) for 5 ms via N-FET\n   - Confirms DUT U7 (AP22811) trips <200 us and firmware IF5 reports FAULT_LATCHED\n\n5. AUTOMATED SEQUENCE (`pu factory-qc`):\n   Step A: Hold TP14 (GP15) LOW -> BOOTSEL -> flash pico_universal_pro.uf2\n   Step B: Verify 0x2E8A:<PU_USB_PID> + unique 16-hex serial\n   Step C: IF5 GET_INFO + SELF_TEST (0x0F) + 1.8/3.3/5.0V loopback (0x3F)\n   Step D: ADC VTREF/I_TARG calibration (+/-3%) + VTARG short trip + CLEAR_FAULT\n   Step E: Emit SHA-256 signed JSON certificate + append factory CSV database"
+    (exclude_from_sim no)
+    (at 20.32 25.4 0)
+    (effects (font (size 1.524 1.524)) (justify left top))
+    (uuid "f0000001-0000-4000-8000-000000000001")
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
